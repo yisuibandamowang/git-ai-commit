@@ -1,0 +1,6 @@
+repo,description,stars,url
+di-sukharev/opencommit,top GPT wrapper for git,7518,https://github.com/di-sukharev/opencommit
+RomanHotsiy/commitgpt,Generate commit messages using ChatGPT,1593,https://github.com/RomanHotsiy/commitgpt
+tak-bro/aicommit2,Reactive CLI for commit messages,528,https://github.com/tak-bro/aicommit2
+yumiaura/aicommit,Local LLM commit messages,38,https://github.com/yumiaura/aicommit
+sidpremkumar/bcommit,Local LLM commit message + PR builder,2,https://github.com/sidpremkumar/bcommit

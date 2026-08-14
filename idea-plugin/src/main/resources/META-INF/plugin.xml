@@ -1,0 +1,33 @@
+<idea-plugin>
+    <id>com.gitai.commit</id>
+    <name>Git AI Commit</name>
+    <vendor>Codex</vendor>
+    <description>Generate commit messages from git diff using local Ollama models.</description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="com.gitai.commit.GitAiSettingsState" />
+        <applicationConfigurable id="com.gitai.commit.settings" parentId="tools" instance="com.gitai.commit.GitAiSettingsConfigurable" displayName="Git AI Commit" />
+        <notificationGroup id="Git AI Commit" displayType="BALLOON" />
+        <appLifecycleListener implementation="com.gitai.commit.GitAiAppLifecycleListener" />
+        <projectManagerListener implementation="com.gitai.commit.GitAiProjectListener" />
+    </extensions>
+
+    <actions>
+        <group id="GitAiCommit.ToolsGroup" text="Git AI Commit" popup="true">
+            <add-to-group group-id="ToolsMenu" anchor="last" />
+            <action id="GitAiCommit.GenerateMessage"
+                    class="com.gitai.commit.GenerateCommitMessageAction"
+                    text="Generate Commit Message"
+                    description="Generate a commit message from git diff" />
+        </group>
+        <action id="GitAiCommit.GenerateMessageInCommitPanel"
+                class="com.gitai.commit.CommitMessageAssistantAction"
+                text="Generate Commit Message"
+                description="Generate a commit message from the current git diff"
+                icon="AllIcons.Actions.IntentionBulb">
+            <add-to-group group-id="Vcs.MessageActionGroup" anchor="last" />
+        </action>
+    </actions>
+</idea-plugin>

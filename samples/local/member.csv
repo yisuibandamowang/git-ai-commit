@@ -1,0 +1,6 @@
+source,commit,subject
+member,3a542345e,添加会员管理系统 架子
+member,0beb5f89f,增加pay 支付逻辑
+member,0590e31a4,修改 会员 pb
+member,2b74b992d,添加 会员管理模块
+member,7a531ec80,删除 订单mysql 文件
