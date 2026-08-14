@@ -18,7 +18,9 @@ class OllamaClient(
     private val baseUrl: String,
     private val httpClient: HttpClient = HttpClient.newHttpClient(),
     private val objectMapper: ObjectMapper = ObjectMapper()
-) : LanguageModelClient {
+) : ModelProvider {
+    override val id: String = "ollama"
+
     override fun generate(model: String, prompt: String): String {
         val body = objectMapper.writeValueAsString(CommitMessageRequest(model, prompt))
         val request = HttpRequest.newBuilder()
@@ -33,8 +35,4 @@ class OllamaClient(
         val json: JsonNode = objectMapper.readTree(response.body())
         return json.path("response").asText("").trim()
     }
-}
-
-fun interface LanguageModelClient {
-    fun generate(model: String, prompt: String): String
 }

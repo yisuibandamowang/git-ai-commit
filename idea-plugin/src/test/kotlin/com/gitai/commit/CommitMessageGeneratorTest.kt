@@ -17,19 +17,32 @@ class CommitMessageGeneratorTest {
             },
             settingsProvider = {
                 GitAiSettingsStateData(
+                    providerId = "ollama",
                     ollamaBaseUrl = "http://localhost:11434",
                     model = "qwen2.5-coder:7b",
-                    promptStyle = "conventional-commits"
+                    promptStyle = "conventional-commits",
+                    openAiCompatibleBaseUrl = "https://api.openai.com/v1",
+                    openAiCompatibleApiKey = ""
                 )
             },
-            clientFactory = {
-                fun interfaceMarker(): LanguageModelClient = LanguageModelClient { _, prompt ->
-                    assertContains(prompt, "diff --git a/app.go b/app.go")
-                    assertContains(prompt, "conventional-commits")
-                    "feat: add app commit"
-                }
-                interfaceMarker()
-            }
+            providerRegistry = ModelProviderRegistry(
+                listOf(
+                    object : ModelProviderFactory {
+                        override val id: String = "ollama"
+                        override fun create(settings: GitAiSettingsStateData): ModelProvider =
+                            object : ModelProvider {
+                                override val id: String = "ollama"
+                                override fun generate(model: String, prompt: String): String {
+                                    assertEquals("qwen2.5-coder:7b", model)
+                                    assertContains(prompt, "diff --git a/app.go b/app.go")
+                                    assertContains(prompt, "conventional-commits")
+                                    assertContains(prompt, "结构化变更摘要")
+                                    return "feat: add app commit"
+                                }
+                            }
+                    }
+                )
+            )
         )
 
         val result = generator.generate("/repo")
@@ -45,15 +58,29 @@ class CommitMessageGeneratorTest {
             diffProvider = { "" },
             settingsProvider = {
                 GitAiSettingsStateData(
+                    providerId = "ollama",
                     ollamaBaseUrl = "http://localhost:11434",
                     model = "qwen2.5-coder:7b",
-                    promptStyle = "conventional-commits"
+                    promptStyle = "conventional-commits",
+                    openAiCompatibleBaseUrl = "https://api.openai.com/v1",
+                    openAiCompatibleApiKey = ""
                 )
             },
-            clientFactory = {
-                clientCalled = true
-                LanguageModelClient { _, _ -> error("should not be called") }
-            }
+            providerRegistry = ModelProviderRegistry(
+                listOf(
+                    object : ModelProviderFactory {
+                        override val id: String = "ollama"
+                        override fun create(settings: GitAiSettingsStateData): ModelProvider =
+                            object : ModelProvider {
+                                override val id: String = "ollama"
+                                override fun generate(model: String, prompt: String): String {
+                                    clientCalled = true
+                                    error("should not be called")
+                                }
+                            }
+                    }
+                )
+            )
         )
 
         val result = generator.generate("/repo")

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.gitai.commit.CommitMessageGeneratorTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-08-14T01:06:02.971Z" hostname="bogon" time="0.097">
+<testsuite name="com.gitai.commit.CommitMessageGeneratorTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-08-14T01:49:30.127Z" hostname="bogon" time="0.092">
   <properties/>
-  <testcase name="returnsEmptyDiffWhenNoChanges" classname="com.gitai.commit.CommitMessageGeneratorTest" time="0.088"/>
-  <testcase name="generatesCommitMessageFromDiff" classname="com.gitai.commit.CommitMessageGeneratorTest" time="0.008"/>
+  <testcase name="returnsEmptyDiffWhenNoChanges" classname="com.gitai.commit.CommitMessageGeneratorTest" time="0.077"/>
+  <testcase name="generatesCommitMessageFromDiff" classname="com.gitai.commit.CommitMessageGeneratorTest" time="0.015"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

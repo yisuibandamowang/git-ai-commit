@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.gitai.commit"
-version = "0.1.1"
+version = "0.1.2"
 
 kotlin {
     jvmToolchain(21)
@@ -35,8 +35,8 @@ intellijPlatform {
             sinceBuild = "242"
             untilBuild = "253.*"
         }
-        description = "Generate commit messages from git diff using local Ollama models."
-        changeNotes = "Add commit message toolbar action for the Commit tool window."
+        description = "Generate commit messages from git diff using local or compatible model providers."
+        changeNotes = "Add configurable model providers and structured diff prompting."
         vendor {
             name = "Codex"
         }

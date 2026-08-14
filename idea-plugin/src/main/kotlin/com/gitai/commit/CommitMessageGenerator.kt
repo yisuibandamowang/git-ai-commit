@@ -12,7 +12,7 @@ class CommitMessageGenerator(
     private val diffProvider: (String?) -> String = { GitDiffReader().readDiff(it) },
     private val promptBuilder: PromptBuilder = PromptBuilder(),
     private val settingsProvider: () -> GitAiSettingsStateData = { GitAiSettingsState.instance().state },
-    private val clientFactory: (String) -> LanguageModelClient = { OllamaClient(it) }
+    private val providerRegistry: ModelProviderRegistry = ModelProviderRegistry()
 ) {
     fun generate(project: Project): CommitMessageGeneration = generate(project.basePath)
 
@@ -22,9 +22,8 @@ class CommitMessageGenerator(
         if (diff.isBlank()) return CommitMessageGeneration.EmptyDiff
 
         val prompt = promptBuilder.build(diff, settings.promptStyle)
-        val message = clientFactory(settings.ollamaBaseUrl)
-            .generate(settings.model, prompt)
-            .trim()
+        val selection = providerRegistry.select(settings)
+        val message = selection.provider.generate(selection.model, prompt).trim()
 
         return if (message.isBlank()) {
             CommitMessageGeneration.EmptyResponse

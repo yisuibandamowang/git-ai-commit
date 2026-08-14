@@ -2,7 +2,7 @@
     <id>com.gitai.commit</id>
     <name>Git AI Commit</name>
     <vendor>Codex</vendor>
-    <description>Generate commit messages from git diff using local Ollama models.</description>
+    <description>Generate commit messages from git diff using local or compatible model providers.</description>
 
     <depends>com.intellij.modules.platform</depends>
 
