@@ -3,6 +3,7 @@ package com.gitai.commit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertContains
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
 
 class CommitMessageGeneratorTest {
@@ -57,6 +58,112 @@ class CommitMessageGeneratorTest {
         var clientCalled = false
         val generator = CommitMessageGenerator(
             diffProvider = { "" },
+            settingsProvider = {
+                GitAiSettingsStateData(
+                    providerId = "ollama",
+                    ollamaBaseUrl = "http://localhost:11434",
+                    model = "qwen2.5-coder:7b",
+                    promptStyle = "conventional-commits",
+                    openAiCompatibleBaseUrl = "https://api.openai.com/v1",
+                    openAiCompatibleApiKey = ""
+                )
+            },
+            providerRegistry = ModelProviderRegistry(
+                listOf(
+                    object : ModelProviderFactory {
+                        override val id: String = "ollama"
+                        override fun create(settings: GitAiSettingsStateData): ModelProvider =
+                            object : ModelProvider {
+                                override val id: String = "ollama"
+                                override fun generate(model: String, prompt: String): String {
+                                    clientCalled = true
+                                    error("should not be called")
+                                }
+                            }
+                    }
+                )
+            )
+        )
+
+        val result = generator.generate("/repo")
+        assertIs<CommitMessageGeneration.EmptyDiff>(result)
+        assertEquals(false, clientCalled)
+    }
+
+    @Test
+    fun filtersGeneratedArtifactsBeforeBuildingPrompt() {
+        var clientCalled = false
+        val generator = CommitMessageGenerator(
+            diffProvider = {
+                """
+                diff --git a/idea-plugin/.intellijPlatform/sandbox/log/idea.log b/idea-plugin/.intellijPlatform/sandbox/log/idea.log
+                index 111..222 100644
+                --- a/idea-plugin/.intellijPlatform/sandbox/log/idea.log
+                +++ b/idea-plugin/.intellijPlatform/sandbox/log/idea.log
+                @@ -1 +1 @@
+                -old shutdown log
+                +new shutdown log
+                diff --git a/idea-plugin/src/main/kotlin/com/gitai/commit/PromptBuilder.kt b/idea-plugin/src/main/kotlin/com/gitai/commit/PromptBuilder.kt
+                index 333..444 100644
+                --- a/idea-plugin/src/main/kotlin/com/gitai/commit/PromptBuilder.kt
+                +++ b/idea-plugin/src/main/kotlin/com/gitai/commit/PromptBuilder.kt
+                @@ -1 +1 @@
+                -old prompt
+                +new prompt
+                """.trimIndent()
+            },
+            settingsProvider = {
+                GitAiSettingsStateData(
+                    providerId = "ollama",
+                    ollamaBaseUrl = "http://localhost:11434",
+                    model = "qwen2.5-coder:7b",
+                    promptStyle = "conventional-commits",
+                    openAiCompatibleBaseUrl = "https://api.openai.com/v1",
+                    openAiCompatibleApiKey = ""
+                )
+            },
+            providerRegistry = ModelProviderRegistry(
+                listOf(
+                    object : ModelProviderFactory {
+                        override val id: String = "ollama"
+                        override fun create(settings: GitAiSettingsStateData): ModelProvider =
+                            object : ModelProvider {
+                                override val id: String = "ollama"
+                                override fun generate(model: String, prompt: String): String {
+                                    clientCalled = true
+                                    assertContains(prompt, "PromptBuilder.kt")
+                                    assertContains(prompt, "+new prompt")
+                                    assertFalse(prompt.contains(".intellijPlatform"))
+                                    assertFalse(prompt.contains("shutdown log"))
+                                    return "优化提交信息提示词"
+                                }
+                            }
+                    }
+                )
+            )
+        )
+
+        val result = generator.generate("/repo")
+        val success = assertIs<CommitMessageGeneration.Success>(result)
+        assertEquals(true, clientCalled)
+        assertEquals("优化提交信息提示词", success.message)
+    }
+
+    @Test
+    fun returnsEmptyDiffWhenOnlyGeneratedArtifactsChanged() {
+        var clientCalled = false
+        val generator = CommitMessageGenerator(
+            diffProvider = {
+                """
+                diff --git a/idea-plugin/.intellijPlatform/sandbox/log/idea.log b/idea-plugin/.intellijPlatform/sandbox/log/idea.log
+                index 111..222 100644
+                --- a/idea-plugin/.intellijPlatform/sandbox/log/idea.log
+                +++ b/idea-plugin/.intellijPlatform/sandbox/log/idea.log
+                @@ -1 +1 @@
+                -old shutdown log
+                +new shutdown log
+                """.trimIndent()
+            },
             settingsProvider = {
                 GitAiSettingsStateData(
                     providerId = "ollama",

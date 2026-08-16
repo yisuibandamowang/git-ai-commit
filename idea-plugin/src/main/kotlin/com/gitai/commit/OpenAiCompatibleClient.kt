@@ -16,7 +16,7 @@ data class OpenAiChatMessage(
 data class OpenAiChatCompletionRequest(
     val model: String,
     val messages: List<OpenAiChatMessage>,
-    val temperature: Double = 0.2
+    val temperature: Double = 0.0
 )
 
 class OpenAiCompatibleClient(
@@ -32,7 +32,7 @@ class OpenAiCompatibleClient(
             OpenAiChatCompletionRequest(
                 model = model,
                 messages = listOf(
-                    OpenAiChatMessage("system", "只输出一句中文提交信息，不要解释、不要正文。"),
+                    OpenAiChatMessage("system", "只输出一句中文提交信息，不要输出 JSON、不要输出英文提交信息、不要解释、不要正文。"),
                     OpenAiChatMessage("user", prompt)
                 )
             )

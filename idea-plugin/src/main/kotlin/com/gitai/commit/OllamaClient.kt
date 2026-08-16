@@ -11,7 +11,8 @@ import java.net.http.HttpResponse
 data class CommitMessageRequest(
     val model: String,
     val prompt: String,
-    val stream: Boolean = false
+    val stream: Boolean = false,
+    val options: Map<String, Double> = mapOf("temperature" to 0.0)
 )
 
 class OllamaClient(

@@ -10,6 +10,7 @@ sealed class CommitMessageGeneration {
 
 class CommitMessageGenerator(
     private val diffProvider: (String?) -> String = { GitDiffReader().readDiff(it) },
+    private val diffFilter: GitDiffFilter = GitDiffFilter(),
     private val promptBuilder: PromptBuilder = PromptBuilder(),
     private val settingsProvider: () -> GitAiSettingsStateData = { GitAiSettingsState.instance().state },
     private val providerRegistry: ModelProviderRegistry = ModelProviderRegistry()
@@ -18,7 +19,10 @@ class CommitMessageGenerator(
 
     fun generate(basePath: String?): CommitMessageGeneration {
         val settings = settingsProvider()
-        val diff = diffProvider(basePath)
+        val rawDiff = diffProvider(basePath)
+        if (rawDiff.isBlank()) return CommitMessageGeneration.EmptyDiff
+
+        val diff = diffFilter.filter(rawDiff)
         if (diff.isBlank()) return CommitMessageGeneration.EmptyDiff
 
         val prompt = promptBuilder.build(diff, settings.promptStyle)
