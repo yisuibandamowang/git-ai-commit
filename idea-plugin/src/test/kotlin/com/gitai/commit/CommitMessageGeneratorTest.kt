@@ -37,7 +37,7 @@ class CommitMessageGeneratorTest {
                                     assertEquals("qwen2.5-coder:7b", model)
                                     assertContains(prompt, "diff --git a/app.go b/app.go")
                                     assertContains(prompt, "conventional-commits")
-                                    assertContains(prompt, "只输出一句中文")
+                                    assertContains(prompt, "Conventional Commit 格式")
                                     assertContains(prompt, "结构化变更摘要")
                                     return "feat(core): 添加应用提交信息"
                                 }
@@ -50,7 +50,7 @@ class CommitMessageGeneratorTest {
         val result = generator.generate("/repo")
         assertEquals(true, called)
         val success = assertIs<CommitMessageGeneration.Success>(result)
-        assertEquals("添加应用提交信息", success.message)
+        assertEquals("feat(core): 添加应用提交信息", success.message)
     }
 
     @Test
@@ -146,7 +146,7 @@ class CommitMessageGeneratorTest {
         val result = generator.generate("/repo")
         val success = assertIs<CommitMessageGeneration.Success>(result)
         assertEquals(true, clientCalled)
-        assertEquals("优化提交信息提示词", success.message)
+        assertEquals("feat: 优化提交信息提示词", success.message)
     }
 
     @Test
@@ -234,6 +234,6 @@ class CommitMessageGeneratorTest {
 
         val result = generator.generate("/repo")
         val success = assertIs<CommitMessageGeneration.Success>(result)
-        assertEquals("新增提交信息格式化、差异分析、Git diff 过滤、模型提供商管理、OpenAI 兼容客户端和测试覆盖", success.message)
+        assertEquals("feat: 新增提交信息格式化、差异分析、Git diff 过滤、模型提供商管理、OpenAI 兼容客户端和测试覆盖", success.message)
     }
 }

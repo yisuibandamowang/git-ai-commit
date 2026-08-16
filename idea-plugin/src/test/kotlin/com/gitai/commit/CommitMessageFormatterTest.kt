@@ -16,7 +16,7 @@ class CommitMessageFormatterTest {
             """.trimIndent()
         )
 
-        assertEquals("新增提交信息格式化、差异分析、Git diff 过滤、模型提供商管理、OpenAI 兼容客户端和测试覆盖", formatted)
+        assertEquals("feat: 新增提交信息格式化、差异分析、Git diff 过滤、模型提供商管理、OpenAI 兼容客户端和测试覆盖", formatted)
     }
 
     @Test
@@ -38,7 +38,7 @@ class CommitMessageFormatterTest {
     fun replacesGenericPluginSubjectWithSpecificFeatureSummary() {
         val formatted = CommitMessageFormatter.format("feat: 添加 Git AI Commit 插件的核心功能")
 
-        assertEquals("新增提交信息格式化、差异分析、Git diff 过滤、模型提供商管理和测试覆盖", formatted)
+        assertEquals("feat: 新增提交信息格式化、差异分析、Git diff 过滤、模型提供商管理和测试覆盖", formatted)
     }
 
     @Test
@@ -47,6 +47,20 @@ class CommitMessageFormatterTest {
             "feat(idea-plugin): add log files for indexing diagnostics and open-telemetry metrics"
         )
 
-        assertEquals("添加索引诊断日志和OpenTelemetry指标文件", formatted)
+        assertEquals("feat(idea-plugin): 添加索引诊断日志和OpenTelemetry指标文件", formatted)
+    }
+
+    @Test
+    fun addsDefaultConventionalPrefixWhenModelReturnsChineseOnly() {
+        val formatted = CommitMessageFormatter.format("优化提交信息提示词")
+
+        assertEquals("feat: 优化提交信息提示词", formatted)
+    }
+
+    @Test
+    fun preservesExistingConventionalPrefix() {
+        val formatted = CommitMessageFormatter.format("fix(core): 修复提交信息为空的问题")
+
+        assertEquals("fix(core): 修复提交信息为空的问题", formatted)
     }
 }

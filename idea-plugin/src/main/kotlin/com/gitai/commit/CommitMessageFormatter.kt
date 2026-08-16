@@ -7,6 +7,7 @@ object CommitMessageFormatter {
     private const val maxLength = 80
     private val objectMapper = ObjectMapper()
     private val subjectPattern = Regex("""(?i)^[a-z][a-z0-9-]*(?:\([^)]+\))?:\s+\S.*$""")
+    private val conventionalPrefixPattern = Regex("""(?i)^([a-z][a-z0-9-]*(?:\([^)]+\))?):\s*(\S.*)$""")
 
     fun format(message: String): String {
         val unwrapped = unwrapModelResponse(message)
@@ -22,7 +23,7 @@ object CommitMessageFormatter {
             ?: summarizeVerbose(unwrapped)
             ?: normalizeSubject(cleanLine(unwrapped.lineSequence().firstOrNull { it.isNotBlank() }.orEmpty()), unwrapped)
 
-        return normalized.take(maxLength).trimEnd()
+        return ensureConventionalPrefix(normalized).take(maxLength).trimEnd()
     }
 
     private fun unwrapModelResponse(message: String): String {
@@ -90,19 +91,21 @@ object CommitMessageFormatter {
     }
 
     private fun normalizeSubject(subject: String, fullText: String): String {
+        val prefix = conventionalPrefixPattern.find(subject)?.groupValues?.get(1)
         val stripped = stripConventionalPrefix(subject)
         if (stripped.any(::isChineseCharacter)) {
-            return if (isGenericPluginSubject(stripped)) {
+            val body = if (isGenericPluginSubject(stripped)) {
                 defaultPluginFeatureSummary()
             } else {
                 stripped
             }
+            return ensureConventionalPrefix(body, prefix)
         }
 
         val translated = translateEnglishSubject(stripped)
-        if (translated.any(::isChineseCharacter)) return translated
+        if (translated.any(::isChineseCharacter)) return ensureConventionalPrefix(translated, prefix)
 
-        return summarizeByKeywords(fullText.lowercase())
+        return ensureConventionalPrefix(summarizeByKeywords(fullText.lowercase()), prefix)
     }
 
     private fun translateEnglishSubject(subject: String): String {
@@ -219,6 +222,15 @@ object CommitMessageFormatter {
 
     private fun stripConventionalPrefix(subject: String): String =
         subject.replace(Regex("""(?i)^[a-z][a-z0-9-]*(?:\([^)]+\))?:\s*"""), "").trim()
+
+    private fun ensureConventionalPrefix(message: String, preferredPrefix: String? = null): String {
+        val trimmed = message.trim()
+        if (trimmed.isBlank()) return ""
+        if (conventionalPrefixPattern.matches(trimmed)) return trimmed
+
+        val prefix = preferredPrefix?.takeIf { it.isNotBlank() } ?: "feat"
+        return "$prefix: $trimmed"
+    }
 
     private fun isChineseCharacter(char: Char): Boolean = char in '\u4e00'..'\u9fff'
 }
