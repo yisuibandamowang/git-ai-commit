@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.gitai.commit.CommitMessageFormatterTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-08-16T11:18:44.777Z" hostname="bogon" time="0.083">
-  <properties/>
-  <testcase name="ignoresStatusOnlyJsonResponse" classname="com.gitai.commit.CommitMessageFormatterTest" time="0.078"/>
-  <testcase name="formatsVerboseJsonResponseIntoChineseSentence" classname="com.gitai.commit.CommitMessageFormatterTest" time="0.005"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 
 object CommitMessageFormatter {
-    private const val maxLength = 30
+    private const val maxLength = 80
     private val objectMapper = ObjectMapper()
     private val subjectPattern = Regex("""(?i)^[a-z][a-z0-9-]*(?:\([^)]+\))?:\s+\S.*$""")
 
@@ -91,7 +91,13 @@ object CommitMessageFormatter {
 
     private fun normalizeSubject(subject: String, fullText: String): String {
         val stripped = stripConventionalPrefix(subject)
-        if (stripped.any(::isChineseCharacter)) return stripped
+        if (stripped.any(::isChineseCharacter)) {
+            return if (isGenericPluginSubject(stripped)) {
+                defaultPluginFeatureSummary()
+            } else {
+                stripped
+            }
+        }
 
         val translated = translateEnglishSubject(stripped)
         if (translated.any(::isChineseCharacter)) return translated
@@ -138,19 +144,8 @@ object CommitMessageFormatter {
         lower.contains("english") && lower.contains("chinese") && lower.contains("commit message") ->
             "支持中英文提交信息切换"
 
-        listOf(
-            "commitmessageformatter",
-            "commit message formatting",
-            "diff analysis",
-            "diff analyzer",
-            "git diff filtering",
-            "diff filter",
-            "model provider",
-            "openai-compatible",
-            "test coverage",
-            "html report"
-        ).count { lower.contains(it) } >= 2 ->
-            "完善提交信息生成、分析和测试能力"
+        featureSummary(lower) != null ->
+            featureSummary(lower)!!
 
         lower.contains("model provider") || lower.contains("openai-compatible") ->
             "完善模型提供商支持"
@@ -160,6 +155,52 @@ object CommitMessageFormatter {
 
         else ->
             "优化提交信息生成"
+    }
+
+    private fun isGenericPluginSubject(subject: String): Boolean =
+        subject.contains("Git AI Commit", ignoreCase = true) &&
+            listOf("核心功能", "主要功能", "基础功能").any { subject.contains(it) }
+
+    private fun defaultPluginFeatureSummary(): String =
+        "新增提交信息格式化、差异分析、Git diff 过滤、模型提供商管理和测试覆盖"
+
+    private fun featureSummary(lower: String): String? {
+        val features = mutableListOf<String>()
+
+        if (listOf("commitmessageformatter", "commit message formatting", "formatting commit messages")
+                .any { lower.contains(it) }
+        ) {
+            features += "提交信息格式化"
+        }
+        if (lower.contains("json") || lower.contains("response")) {
+            features += "JSON 解析"
+        }
+        if (listOf("diff analysis", "diff analyzer", "analyzing diffs").any { lower.contains(it) }) {
+            features += "差异分析"
+        }
+        if (listOf("git diff filtering", "gitdifffilter", "diff filter").any { lower.contains(it) }) {
+            features += "Git diff 过滤"
+        }
+        if (listOf("model provider", "provider management", "provider selection").any { lower.contains(it) }) {
+            features += "模型提供商管理"
+        }
+        if (lower.contains("openai-compatible")) {
+            features += "OpenAI 兼容客户端"
+        }
+        if (listOf("promptbuilder", "prompt style", "prompt template").any { lower.contains(it) }) {
+            features += "提示词优化"
+        }
+        if (listOf("test coverage", "unit tests", "html reports", "report pages").any { lower.contains(it) }) {
+            features += "测试覆盖"
+        }
+
+        if (features.size < 2) return null
+
+        return "新增" + when (features.size) {
+            1 -> features[0]
+            2 -> features.joinToString("和")
+            else -> features.dropLast(1).joinToString("、") + "和" + features.last()
+        }
     }
 
     private fun stripConventionalPrefix(subject: String): String =

@@ -127,6 +127,6 @@ class CommitMessageGeneratorTest {
 
         val result = generator.generate("/repo")
         val success = assertIs<CommitMessageGeneration.Success>(result)
-        assertEquals("完善提交信息生成、分析和测试能力", success.message)
+        assertEquals("新增提交信息格式化、差异分析、Git diff 过滤、模型提供商管理、OpenAI 兼容客户端和测试覆盖", success.message)
     }
 }

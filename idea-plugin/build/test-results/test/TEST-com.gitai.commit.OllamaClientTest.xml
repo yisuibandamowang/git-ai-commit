@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.gitai.commit.OllamaClientTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-08-16T11:18:45.130Z" hostname="bogon" time="0.026">
-  <properties/>
-  <testcase name="parsesOllamaResponseText" classname="com.gitai.commit.OllamaClientTest" time="0.023"/>
-  <testcase name="failsOnHttpError" classname="com.gitai.commit.OllamaClientTest" time="0.003"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

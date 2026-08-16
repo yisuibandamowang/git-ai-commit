@@ -16,7 +16,7 @@ class CommitMessageFormatterTest {
             """.trimIndent()
         )
 
-        assertEquals("完善提交信息生成、分析和测试能力", formatted)
+        assertEquals("新增提交信息格式化、差异分析、Git diff 过滤、模型提供商管理、OpenAI 兼容客户端和测试覆盖", formatted)
     }
 
     @Test
@@ -32,5 +32,12 @@ class CommitMessageFormatterTest {
         )
 
         assertEquals("", formatted)
+    }
+
+    @Test
+    fun replacesGenericPluginSubjectWithSpecificFeatureSummary() {
+        val formatted = CommitMessageFormatter.format("feat: 添加 Git AI Commit 插件的核心功能")
+
+        assertEquals("新增提交信息格式化、差异分析、Git diff 过滤、模型提供商管理和测试覆盖", formatted)
     }
 }
