@@ -40,4 +40,13 @@ class CommitMessageFormatterTest {
 
         assertEquals("新增提交信息格式化、差异分析、Git diff 过滤、模型提供商管理和测试覆盖", formatted)
     }
+
+    @Test
+    fun translatesSpecificEnglishConventionalCommitSubjectIntoChinese() {
+        val formatted = CommitMessageFormatter.format(
+            "feat(idea-plugin): add log files for indexing diagnostics and open-telemetry metrics"
+        )
+
+        assertEquals("添加索引诊断日志和OpenTelemetry指标文件", formatted)
+    }
 }

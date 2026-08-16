@@ -106,6 +106,8 @@ object CommitMessageFormatter {
     }
 
     private fun translateEnglishSubject(subject: String): String {
+        translateSpecificEnglishSubject(subject)?.let { return it }
+
         var translated = subject
             .replace("generated commit messages", "生成的提交信息", ignoreCase = true)
             .replace("generated commit message", "生成的提交信息", ignoreCase = true)
@@ -138,6 +140,18 @@ object CommitMessageFormatter {
 
         translated = translated.removeSuffix(".")
         return translated
+    }
+
+    private fun translateSpecificEnglishSubject(subject: String): String? {
+        val normalized = subject.lowercase()
+
+        return when {
+            normalized.contains("add log files for indexing diagnostics and open-telemetry metrics") ||
+                normalized.contains("add log files for indexing diagnostics and open telemetry metrics") ->
+                "添加索引诊断日志和OpenTelemetry指标文件"
+
+            else -> null
+        }
     }
 
     private fun summarizeByKeywords(lower: String): String = when {
