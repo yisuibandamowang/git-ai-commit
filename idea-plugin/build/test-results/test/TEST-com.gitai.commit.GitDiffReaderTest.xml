@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.gitai.commit.GitDiffReaderTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-08-14T01:49:30.222Z" hostname="bogon" time="0.157">
+<testsuite name="com.gitai.commit.GitDiffReaderTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-08-16T11:18:44.942Z" hostname="bogon" time="0.187">
   <properties/>
-  <testcase name="prefersStagedDiffWhenAvailable" classname="com.gitai.commit.GitDiffReaderTest" time="0.068"/>
-  <testcase name="usesWorkspaceDiffWhenNothingIsStaged" classname="com.gitai.commit.GitDiffReaderTest" time="0.089"/>
+  <testcase name="prefersStagedDiffWhenAvailable" classname="com.gitai.commit.GitDiffReaderTest" time="0.081"/>
+  <testcase name="usesWorkspaceDiffWhenNothingIsStaged" classname="com.gitai.commit.GitDiffReaderTest" time="0.106"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -23,7 +23,9 @@ class CommitMessageGenerator(
 
         val prompt = promptBuilder.build(diff, settings.promptStyle)
         val selection = providerRegistry.select(settings)
-        val message = selection.provider.generate(selection.model, prompt).trim()
+        val message = CommitMessageFormatter.format(
+            selection.provider.generate(selection.model, prompt)
+        )
 
         return if (message.isBlank()) {
             CommitMessageGeneration.EmptyResponse
