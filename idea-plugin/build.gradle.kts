@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "2.2.20"
+    application
     id("org.jetbrains.intellij.platform") version "2.18.1"
 }
 
@@ -8,6 +9,11 @@ version = "0.1.2"
 
 kotlin {
     jvmToolchain(21)
+}
+
+application {
+    applicationName = "git-ai-commit"
+    mainClass.set("com.gitai.commit.cli.GitAiCommitCliKt")
 }
 
 repositories {
