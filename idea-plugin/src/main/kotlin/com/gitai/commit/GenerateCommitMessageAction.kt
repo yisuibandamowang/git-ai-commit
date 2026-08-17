@@ -22,7 +22,7 @@ class GenerateCommitMessageAction : AnAction() {
                 val result = try {
                     generator.generate(project)
                 } catch (t: Throwable) {
-                    notifier.notifyLater(project, "调用 Ollama 失败：${t.message}", NotificationType.ERROR)
+                    notifier.notifyLater(project, "调用模型失败：${t.message}", NotificationType.ERROR)
                     return
                 }
 

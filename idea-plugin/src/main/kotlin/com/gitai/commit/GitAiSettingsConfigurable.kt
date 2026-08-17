@@ -8,7 +8,7 @@ import javax.swing.JComponent
 import javax.swing.JPasswordField
 
 class GitAiSettingsConfigurable : Configurable {
-    private val providerField = JComboBox(arrayOf("ollama", "openai-compatible"))
+    private val providerField = JComboBox(arrayOf("ollama", "deepseek", "openai-compatible"))
     private var baseUrlField = javax.swing.JTextField()
     private var modelField = javax.swing.JTextField()
     private var promptStyleField = javax.swing.JTextField()
