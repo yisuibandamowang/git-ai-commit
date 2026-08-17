@@ -30,7 +30,7 @@ dependencies {
         if (goLandApp.exists()) {
             local(goLandApp)
         } else {
-            intellijIdeaCommunity("2025.3.5")
+            intellijIdea("2025.3.5")
         }
         javaCompiler()
     }
