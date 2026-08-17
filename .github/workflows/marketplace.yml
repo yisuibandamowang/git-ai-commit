@@ -1,0 +1,66 @@
+name: Publish Marketplace
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    name: Publish plugin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Check Marketplace credentials
+        id: creds
+        shell: bash
+        env:
+          JETBRAINS_CERTIFICATE_CHAIN: ${{ secrets.JETBRAINS_CERTIFICATE_CHAIN }}
+          JETBRAINS_PRIVATE_KEY: ${{ secrets.JETBRAINS_PRIVATE_KEY }}
+          JETBRAINS_PRIVATE_KEY_PASSWORD: ${{ secrets.JETBRAINS_PRIVATE_KEY_PASSWORD }}
+          JETBRAINS_PUBLISH_TOKEN: ${{ secrets.JETBRAINS_PUBLISH_TOKEN }}
+        run: |
+          missing=0
+          for name in \
+            JETBRAINS_CERTIFICATE_CHAIN \
+            JETBRAINS_PRIVATE_KEY \
+            JETBRAINS_PRIVATE_KEY_PASSWORD \
+            JETBRAINS_PUBLISH_TOKEN
+          do
+            if [[ -z "${!name}" ]]; then
+              echo "Missing $name"
+              missing=1
+            fi
+          done
+
+          if [[ "$missing" -eq 1 ]]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build and publish plugin
+        if: steps.creds.outputs.enabled == 'true'
+        working-directory: idea-plugin
+        env:
+          JETBRAINS_CERTIFICATE_CHAIN: ${{ secrets.JETBRAINS_CERTIFICATE_CHAIN }}
+          JETBRAINS_PRIVATE_KEY: ${{ secrets.JETBRAINS_PRIVATE_KEY }}
+          JETBRAINS_PRIVATE_KEY_PASSWORD: ${{ secrets.JETBRAINS_PRIVATE_KEY_PASSWORD }}
+          JETBRAINS_PUBLISH_TOKEN: ${{ secrets.JETBRAINS_PUBLISH_TOKEN }}
+          JETBRAINS_PUBLISH_CHANNELS: ${{ vars.JETBRAINS_PUBLISH_CHANNELS }}
+        run: ./gradlew publishPlugin
+
+      - name: Skip publish
+        if: steps.creds.outputs.enabled != 'true'
+        run: echo "Marketplace credentials are not configured, skipping publish."

@@ -36,6 +36,20 @@ class GitDiffReaderTest {
         assertContains(diff, "file.txt")
     }
 
+    @Test
+    fun includesUntrackedFilesWhenNothingIsStaged() {
+        val repo = createTempDir(prefix = "git-ai-commit-untracked")
+        runCommand(repo, "git", "init")
+        runCommand(repo, "git", "config", "user.email", "test@example.com")
+        runCommand(repo, "git", "config", "user.name", "Test User")
+        File(repo, "new-file.txt").writeText("hello untracked\n")
+
+        val diff = GitDiffReader().readDiff(repo.absolutePath)
+        assertContains(diff, "diff --git")
+        assertContains(diff, "new-file.txt")
+        assertContains(diff, "hello untracked")
+    }
+
     private fun runCommand(dir: File, vararg command: String) {
         val process = ProcessBuilder(*command)
             .directory(dir)

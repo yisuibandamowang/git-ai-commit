@@ -48,4 +48,32 @@ intellijPlatform {
             name = "Codex"
         }
     }
+
+    signing {
+        providers.environmentVariable("JETBRAINS_CERTIFICATE_CHAIN").orNull?.let {
+            certificateChain.set(it)
+        }
+        providers.environmentVariable("JETBRAINS_PRIVATE_KEY").orNull?.let {
+            privateKey.set(it)
+        }
+        providers.environmentVariable("JETBRAINS_PRIVATE_KEY_PASSWORD").orNull?.let {
+            password.set(it)
+        }
+    }
+
+    publishing {
+        host.set("https://plugins.jetbrains.com")
+        providers.environmentVariable("JETBRAINS_PUBLISH_TOKEN").orNull?.let {
+            token.set(it)
+        }
+        channels.set(
+            providers.environmentVariable("JETBRAINS_PUBLISH_CHANNELS").orNull
+                ?.takeIf { value -> value.isNotBlank() }
+                ?.split(',')
+                ?.map(String::trim)
+                ?.filter(String::isNotEmpty)
+                ?.takeIf { it.isNotEmpty() }
+                ?: listOf("default")
+        )
+    }
 }

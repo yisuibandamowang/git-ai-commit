@@ -14,7 +14,10 @@ class GitDiffReader {
         val staged = runGit(root, "diff", "--cached")
         if (staged.isNotBlank()) return staged
 
-        return runGit(root, "diff")
+        val tracked = runGit(root, "diff")
+        if (tracked.isNotBlank()) return tracked
+
+        return runUntrackedDiff(root)
     }
 
     private fun runGit(root: File, vararg args: String): String {
@@ -22,5 +25,25 @@ class GitDiffReader {
             .redirectErrorStream(true)
             .start()
         return process.inputStream.bufferedReader().use { it.readText() }.trim()
+    }
+
+    private fun runUntrackedDiff(root: File): String {
+        val status = runGit(root, "status", "--porcelain=v1", "--untracked-files=all", "-z")
+        if (status.isBlank()) return ""
+
+        return status
+            .split('\u0000')
+            .asSequence()
+            .mapNotNull { entry ->
+                val trimmed = entry.trim()
+                if (!trimmed.startsWith("?? ")) return@mapNotNull null
+                trimmed.removePrefix("?? ").takeIf { it.isNotBlank() }
+            }
+            .map { path ->
+                runGit(root, "diff", "--no-index", "--", "/dev/null", path)
+            }
+            .filter { it.isNotBlank() }
+            .joinToString("\n")
+            .trim()
     }
 }
