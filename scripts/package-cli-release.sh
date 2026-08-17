@@ -23,6 +23,18 @@ if [[ -z "$MAIN_JAR_PATH" ]]; then
 fi
 MAIN_JAR="$(basename "$MAIN_JAR_PATH")"
 
+CLASSPATH="$(
+    python3 - "$DIST_LIB_DIR" <<'PY'
+from pathlib import Path
+import os
+import sys
+
+lib_dir = Path(sys.argv[1])
+jars = sorted(str(path) for path in lib_dir.glob("*.jar"))
+print(os.pathsep.join(jars))
+PY
+)"
+
 JDEPS_BIN="${JAVA_HOME:-}/bin/jdeps"
 if [[ ! -x "$JDEPS_BIN" ]]; then
     JDEPS_BIN="$(command -v jdeps)"
@@ -45,7 +57,7 @@ MODULES="$("$JDEPS_BIN" \
     --ignore-missing-deps \
     --multi-release 21 \
     --print-module-deps \
-    --class-path "$DIST_LIB_DIR/*" \
+    --class-path "$CLASSPATH" \
     "$MAIN_JAR_PATH")"
 MODULES="${MODULES},jdk.crypto.ec"
 
