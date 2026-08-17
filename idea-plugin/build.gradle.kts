@@ -26,7 +26,12 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        local("/Applications/GoLand.app")
+        val goLandApp = file("/Applications/GoLand.app")
+        if (goLandApp.exists()) {
+            local(goLandApp)
+        } else {
+            intellijIdeaCommunity("2025.3.5")
+        }
         javaCompiler()
     }
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
