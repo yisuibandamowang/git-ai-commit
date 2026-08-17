@@ -30,6 +30,7 @@ dependencies {
         javaCompiler()
     }
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
+    implementation(kotlin("stdlib"))
     testImplementation(kotlin("test"))
 }
 
