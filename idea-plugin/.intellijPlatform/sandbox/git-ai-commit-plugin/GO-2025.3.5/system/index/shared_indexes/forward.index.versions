@@ -37,9 +37,9 @@ shared.index.file.content.hash.forward.index.sih.go.alias.to.import.path:2
 shared.index.file.content.hash.forward.index.sih.ts.external.module.index:1
 shared.index.file.content.hash.forward.index.sih.js.exported.index:1
 shared.index.file.content.hash.forward.index.sih.es6.exported.index:1
-shared.index.file.content.hash.forward.index.sih.js.qualified.shortName:1
-shared.index.file.content.hash.forward.index.sih.sql.routine.index:2
 shared.index.file.content.hash.forward.index.sih.ts.embedded.content.index:1
+shared.index.file.content.hash.forward.index.sih.sql.routine.index:2
+shared.index.file.content.hash.forward.index.sih.js.qualified.shortName:1
 shared.index.file.content.hash.forward.index.sih.Css.custom.variable:1
 shared.index.file.content.hash.forward.index.sih.OpenapiSpecificationContentIndexer:2
 shared.index.file.content.hash.forward.index.sih.HtmlTagIdIndex:2
@@ -52,12 +52,12 @@ shared.index.file.content.hash.forward.index.sih.js.typedef.index2:1
 shared.index.file.content.hash.forward.index.sih.sql.types.count.index:2
 shared.index.file.content.hash.forward.index.sih.js.test.names:2
 shared.index.file.content.hash.forward.index.sih.js.element.qualifiedName:1
-shared.index.file.content.hash.forward.index.sih.js.local.namespace.members.index:1
-shared.index.file.content.hash.forward.index.sih.amd.baseUrl.index:1
 shared.index.file.content.hash.forward.index.sih.go.package.level.public.elements:1
+shared.index.file.content.hash.forward.index.sih.amd.baseUrl.index:1
+shared.index.file.content.hash.forward.index.sih.js.local.namespace.members.index:1
 shared.index.file.content.hash.forward.index.sih.editorconfig.index.name:2
 shared.index.file.content.hash.forward.index.sih.XmlTagNames:2
-shared.index.file.content.hash.forward.index.sih.FilenameIndex:10
+shared.index.file.content.hash.forward.index.sih.FilenameIndex:11
 shared.index.file.content.hash.forward.index.sih.protobuf.byShortName:1
 shared.index.file.content.hash.forward.index.sih.IdIndex:2
 shared.index.file.content.hash.forward.index.sih.sql.names:1

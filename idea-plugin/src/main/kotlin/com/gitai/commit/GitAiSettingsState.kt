@@ -9,6 +9,7 @@ import com.intellij.openapi.components.service
 data class GitAiSettingsStateData(
     var providerId: String = "ollama",
     var ollamaBaseUrl: String = "http://localhost:11434",
+    var deepSeekBaseUrl: String = "https://api.deepseek.com",
     var model: String = "qwen2.5-coder:7b",
     var promptStyle: String = "conventional-commits",
     var openAiCompatibleBaseUrl: String = "https://api.openai.com/v1",
@@ -32,6 +33,10 @@ class GitAiSettingsState : PersistentStateComponent<GitAiSettingsStateData> {
     var ollamaBaseUrl: String
         get() = state.ollamaBaseUrl
         set(value) { state.ollamaBaseUrl = value }
+
+    var deepSeekBaseUrl: String
+        get() = state.deepSeekBaseUrl
+        set(value) { state.deepSeekBaseUrl = value }
 
     var model: String
         get() = state.model

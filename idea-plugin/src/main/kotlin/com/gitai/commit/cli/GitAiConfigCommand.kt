@@ -110,6 +110,7 @@ object GitAiConfigCommand {
         config.model?.let { add("model" to it) }
         config.promptStyle?.let { add("promptStyle" to it) }
         config.ollamaBaseUrl?.let { add("ollamaBaseUrl" to it) }
+        config.deepSeekBaseUrl?.let { add("deepSeekBaseUrl" to it) }
         config.openAiCompatibleBaseUrl?.let { add("openAiCompatibleBaseUrl" to it) }
         config.openAiCompatibleApiKey?.let { add("openAiCompatibleApiKey" to it) }
     }
@@ -119,6 +120,7 @@ object GitAiConfigCommand {
         "model" -> config.model.orEmpty()
         "promptStyle" -> config.promptStyle.orEmpty()
         "ollamaBaseUrl" -> config.ollamaBaseUrl.orEmpty()
+        "deepSeekBaseUrl" -> config.deepSeekBaseUrl.orEmpty()
         "openAiCompatibleBaseUrl" -> config.openAiCompatibleBaseUrl.orEmpty()
         "openAiCompatibleApiKey" -> config.openAiCompatibleApiKey.orEmpty()
         else -> throw IllegalArgumentException("Unknown config key: $key")
@@ -130,6 +132,7 @@ object GitAiConfigCommand {
             "model" -> config.model = value
             "promptStyle" -> config.promptStyle = value
             "ollamaBaseUrl" -> config.ollamaBaseUrl = value
+            "deepSeekBaseUrl" -> config.deepSeekBaseUrl = value
             "openAiCompatibleBaseUrl" -> config.openAiCompatibleBaseUrl = value
             "openAiCompatibleApiKey" -> config.openAiCompatibleApiKey = value
             else -> throw IllegalArgumentException("Unknown config key: $key")
