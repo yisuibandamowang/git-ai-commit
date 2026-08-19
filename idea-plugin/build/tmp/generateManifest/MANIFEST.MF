@@ -1,5 +1,5 @@
 Created-By: Gradle 9.2.0
-Version: 0.1.22
+Version: 0.1.23
 Build-JVM: 21.0.11 (JetBrains s.r.o. 21.0.11+10-b1163.116)
 Build-OS: Mac OS X 14.8 aarch64
 Build-Plugin: IntelliJ Platform Gradle Plugin

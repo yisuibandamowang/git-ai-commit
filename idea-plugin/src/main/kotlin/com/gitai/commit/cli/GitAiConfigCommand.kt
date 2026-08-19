@@ -111,6 +111,10 @@ object GitAiConfigCommand {
         config.promptStyle?.let { add("promptStyle" to it) }
         config.ollamaBaseUrl?.let { add("ollamaBaseUrl" to it) }
         config.deepSeekBaseUrl?.let { add("deepSeekBaseUrl" to it) }
+        config.aliyunBaseUrl?.let { add("aliyunBaseUrl" to it) }
+        config.miniMaxBaseUrl?.let { add("miniMaxBaseUrl" to it) }
+        config.kimiBaseUrl?.let { add("kimiBaseUrl" to it) }
+        config.glmBaseUrl?.let { add("glmBaseUrl" to it) }
         config.openAiCompatibleBaseUrl?.let { add("openAiCompatibleBaseUrl" to it) }
         config.openAiCompatibleApiKey?.let { add("openAiCompatibleApiKey" to it) }
     }
@@ -121,6 +125,10 @@ object GitAiConfigCommand {
         "promptStyle" -> config.promptStyle.orEmpty()
         "ollamaBaseUrl" -> config.ollamaBaseUrl.orEmpty()
         "deepSeekBaseUrl" -> config.deepSeekBaseUrl.orEmpty()
+        "aliyunBaseUrl" -> config.aliyunBaseUrl.orEmpty()
+        "miniMaxBaseUrl" -> config.miniMaxBaseUrl.orEmpty()
+        "kimiBaseUrl" -> config.kimiBaseUrl.orEmpty()
+        "glmBaseUrl" -> config.glmBaseUrl.orEmpty()
         "openAiCompatibleBaseUrl" -> config.openAiCompatibleBaseUrl.orEmpty()
         "openAiCompatibleApiKey" -> config.openAiCompatibleApiKey.orEmpty()
         else -> throw IllegalArgumentException("Unknown config key: $key")
@@ -133,6 +141,10 @@ object GitAiConfigCommand {
             "promptStyle" -> config.promptStyle = value
             "ollamaBaseUrl" -> config.ollamaBaseUrl = value
             "deepSeekBaseUrl" -> config.deepSeekBaseUrl = value
+            "aliyunBaseUrl" -> config.aliyunBaseUrl = value
+            "miniMaxBaseUrl" -> config.miniMaxBaseUrl = value
+            "kimiBaseUrl" -> config.kimiBaseUrl = value
+            "glmBaseUrl" -> config.glmBaseUrl = value
             "openAiCompatibleBaseUrl" -> config.openAiCompatibleBaseUrl = value
             "openAiCompatibleApiKey" -> config.openAiCompatibleApiKey = value
             else -> throw IllegalArgumentException("Unknown config key: $key")

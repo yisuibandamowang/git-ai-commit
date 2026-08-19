@@ -10,6 +10,10 @@ data class GitAiSettingsStateData(
     var providerId: String = "ollama",
     var ollamaBaseUrl: String = "http://localhost:11434",
     var deepSeekBaseUrl: String = "https://api.deepseek.com",
+    var aliyunBaseUrl: String = "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    var miniMaxBaseUrl: String = "https://api.minimaxi.com/v1",
+    var kimiBaseUrl: String = "https://api.moonshot.cn/v1",
+    var glmBaseUrl: String = "https://open.bigmodel.cn/api/paas/v4",
     var model: String = "qwen2.5-coder:7b",
     var promptStyle: String = "conventional-commits",
     var openAiCompatibleBaseUrl: String = "https://api.openai.com/v1",
@@ -37,6 +41,22 @@ class GitAiSettingsState : PersistentStateComponent<GitAiSettingsStateData> {
     var deepSeekBaseUrl: String
         get() = state.deepSeekBaseUrl
         set(value) { state.deepSeekBaseUrl = value }
+
+    var aliyunBaseUrl: String
+        get() = state.aliyunBaseUrl
+        set(value) { state.aliyunBaseUrl = value }
+
+    var miniMaxBaseUrl: String
+        get() = state.miniMaxBaseUrl
+        set(value) { state.miniMaxBaseUrl = value }
+
+    var kimiBaseUrl: String
+        get() = state.kimiBaseUrl
+        set(value) { state.kimiBaseUrl = value }
+
+    var glmBaseUrl: String
+        get() = state.glmBaseUrl
+        set(value) { state.glmBaseUrl = value }
 
     var model: String
         get() = state.model

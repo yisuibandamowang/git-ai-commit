@@ -22,6 +22,10 @@ class ModelProviderRegistry(
     private val factories: List<ModelProviderFactory> = listOf(
         OllamaProviderFactory(),
         DeepSeekProviderFactory(),
+        AliyunProviderFactory(),
+        MiniMaxProviderFactory(),
+        KimiProviderFactory(),
+        GlmProviderFactory(),
         OpenAiCompatibleProviderFactory()
     )
 ) {
@@ -31,6 +35,14 @@ class ModelProviderRegistry(
         val model = settings.model.takeIf { it.isNotBlank() } ?: factory.defaultModel
         return ProviderSelection(factory.create(settings), model)
     }
+
+    fun providerIds(): List<String> = factories.map { it.id }
+
+    fun defaultModelFor(providerId: String): String =
+        factories.firstOrNull { it.id == providerId }?.defaultModel.orEmpty()
+
+    fun isDefaultModel(model: String): Boolean =
+        model.isNotBlank() && factories.any { it.defaultModel == model }
 }
 
 class OllamaProviderFactory : ModelProviderFactory {

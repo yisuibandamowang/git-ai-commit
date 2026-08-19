@@ -9,12 +9,17 @@ import javax.swing.JPasswordField
 import javax.swing.JTextField
 
 class GitAiSettingsConfigurable : Configurable {
-    private val providerField = JComboBox(arrayOf("ollama", "deepseek", "openai-compatible"))
+    private val providerRegistry = ModelProviderRegistry()
+    private val providerField = JComboBox(providerRegistry.providerIds().toTypedArray())
     private var baseUrlField = JTextField()
     private var deepSeekBaseUrlField = JTextField()
+    private var aliyunBaseUrlField = JTextField()
+    private var miniMaxBaseUrlField = JTextField()
+    private var kimiBaseUrlField = JTextField()
+    private var glmBaseUrlField = JTextField()
+    private var openAiBaseUrlField = JTextField()
     private var modelField = JTextField()
     private var promptStyleField = JTextField()
-    private var openAiBaseUrlField = JTextField()
     private var openAiApiKeyField = JPasswordField()
 
     override fun getDisplayName(): String = "Git AI Commit"
@@ -32,6 +37,18 @@ class GitAiSettingsConfigurable : Configurable {
             }
             row("DeepSeek base URL") {
                 cell(deepSeekBaseUrlField).align(AlignX.FILL)
+            }
+            row("Aliyun base URL") {
+                cell(aliyunBaseUrlField).align(AlignX.FILL)
+            }
+            row("MiniMax base URL") {
+                cell(miniMaxBaseUrlField).align(AlignX.FILL)
+            }
+            row("Kimi base URL") {
+                cell(kimiBaseUrlField).align(AlignX.FILL)
+            }
+            row("GLM base URL") {
+                cell(glmBaseUrlField).align(AlignX.FILL)
             }
             row("OpenAI-compatible base URL") {
                 cell(openAiBaseUrlField).align(AlignX.FILL)
@@ -55,19 +72,18 @@ class GitAiSettingsConfigurable : Configurable {
         val provider = providerField.selectedItem?.toString().orEmpty()
         baseUrlField.isEnabled = provider == "ollama"
         deepSeekBaseUrlField.isEnabled = provider == "deepseek"
+        aliyunBaseUrlField.isEnabled = provider == "aliyun"
+        miniMaxBaseUrlField.isEnabled = provider == "minimax"
+        kimiBaseUrlField.isEnabled = provider == "kimi"
+        glmBaseUrlField.isEnabled = provider == "glm"
         openAiBaseUrlField.isEnabled = provider == "openai-compatible"
         syncModelForProvider(provider)
     }
 
     private fun syncModelForProvider(provider: String) {
         val current = modelField.text.trim()
-        val knownDefaults = setOf("qwen2.5-coder:7b", "deepseek-v4-flash")
-        if (current.isNotEmpty() && current !in knownDefaults) return
-        modelField.text = when (provider) {
-            "deepseek" -> "deepseek-v4-flash"
-            "ollama" -> "qwen2.5-coder:7b"
-            else -> ""
-        }
+        if (current.isNotEmpty() && !providerRegistry.isDefaultModel(current)) return
+        modelField.text = providerRegistry.defaultModelFor(provider)
     }
 
     override fun isModified(): Boolean {
@@ -75,6 +91,10 @@ class GitAiSettingsConfigurable : Configurable {
         return providerField.selectedItem != settings.providerId ||
             baseUrlField.text != settings.ollamaBaseUrl ||
             deepSeekBaseUrlField.text != settings.deepSeekBaseUrl ||
+            aliyunBaseUrlField.text != settings.aliyunBaseUrl ||
+            miniMaxBaseUrlField.text != settings.miniMaxBaseUrl ||
+            kimiBaseUrlField.text != settings.kimiBaseUrl ||
+            glmBaseUrlField.text != settings.glmBaseUrl ||
             modelField.text != settings.model ||
             promptStyleField.text != settings.promptStyle ||
             openAiBaseUrlField.text != settings.openAiCompatibleBaseUrl ||
@@ -86,6 +106,10 @@ class GitAiSettingsConfigurable : Configurable {
         settings.providerId = providerField.selectedItem?.toString().orEmpty()
         settings.ollamaBaseUrl = baseUrlField.text.trim()
         settings.deepSeekBaseUrl = deepSeekBaseUrlField.text.trim()
+        settings.aliyunBaseUrl = aliyunBaseUrlField.text.trim()
+        settings.miniMaxBaseUrl = miniMaxBaseUrlField.text.trim()
+        settings.kimiBaseUrl = kimiBaseUrlField.text.trim()
+        settings.glmBaseUrl = glmBaseUrlField.text.trim()
         settings.model = modelField.text.trim()
         settings.promptStyle = promptStyleField.text.trim()
         settings.openAiCompatibleBaseUrl = openAiBaseUrlField.text.trim()
@@ -97,6 +121,10 @@ class GitAiSettingsConfigurable : Configurable {
         providerField.selectedItem = settings.providerId
         baseUrlField.text = settings.ollamaBaseUrl
         deepSeekBaseUrlField.text = settings.deepSeekBaseUrl
+        aliyunBaseUrlField.text = settings.aliyunBaseUrl
+        miniMaxBaseUrlField.text = settings.miniMaxBaseUrl
+        kimiBaseUrlField.text = settings.kimiBaseUrl
+        glmBaseUrlField.text = settings.glmBaseUrl
         modelField.text = settings.model
         promptStyleField.text = settings.promptStyle
         openAiBaseUrlField.text = settings.openAiCompatibleBaseUrl
@@ -108,9 +136,13 @@ class GitAiSettingsConfigurable : Configurable {
         providerField.selectedItem = "ollama"
         baseUrlField = JTextField()
         deepSeekBaseUrlField = JTextField()
+        aliyunBaseUrlField = JTextField()
+        miniMaxBaseUrlField = JTextField()
+        kimiBaseUrlField = JTextField()
+        glmBaseUrlField = JTextField()
+        openAiBaseUrlField = JTextField()
         modelField = JTextField()
         promptStyleField = JTextField()
-        openAiBaseUrlField = JTextField()
         openAiApiKeyField = JPasswordField()
     }
 }
