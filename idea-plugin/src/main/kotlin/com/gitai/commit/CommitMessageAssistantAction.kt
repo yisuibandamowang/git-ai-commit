@@ -35,7 +35,23 @@ class CommitMessageAssistantAction : DumbAwareAction() {
         ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Generate Commit Message", false) {
             override fun run(indicator: ProgressIndicator) {
                 val result = try {
-                    generator.generate(project)
+                    generator.generate(project.basePath) { message ->
+                        ApplicationManager.getApplication().invokeLater({
+                            when {
+                                commitWorkflowUi != null -> {
+                                    commitWorkflowUi.commitMessageUi.text = message
+                                }
+                                commitMessageControl != null -> {
+                                    commitMessageControl.setCommitMessage(message)
+                                }
+                                commitMessageDocument != null -> {
+                                    WriteCommandAction.runWriteCommandAction(project) {
+                                        commitMessageDocument.setText(message)
+                                    }
+                                }
+                            }
+                        }, ModalityState.any())
+                    }
                 } catch (t: Throwable) {
                     notifier.notifyLater(project, "调用模型失败：${t.message}", NotificationType.ERROR)
                     return

@@ -3,6 +3,7 @@ package com.gitai.commit
 interface ModelProvider {
     val id: String
     fun generate(model: String, prompt: String): String
+    fun generateStream(model: String, prompt: String, onChunk: (String) -> Unit): String
 }
 
 data class ProviderSelection(

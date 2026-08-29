@@ -20,7 +20,7 @@ class GenerateCommitMessageAction : AnAction() {
         ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Generate Commit Message", false) {
             override fun run(indicator: ProgressIndicator) {
                 val result = try {
-                    generator.generate(project)
+                    generator.generate(project.basePath)
                 } catch (t: Throwable) {
                     notifier.notifyLater(project, "调用模型失败：${t.message}", NotificationType.ERROR)
                     return

@@ -17,7 +17,7 @@ class CommitMessageGenerator(
 ) {
     fun generate(project: Project): CommitMessageGeneration = generate(project.basePath)
 
-    fun generate(basePath: String?): CommitMessageGeneration {
+    fun generate(basePath: String?, onUpdate: (String) -> Unit = {}): CommitMessageGeneration {
         val settings = settingsProvider()
         val rawDiff = diffProvider(basePath)
         if (rawDiff.isBlank()) return CommitMessageGeneration.EmptyDiff
@@ -27,9 +27,15 @@ class CommitMessageGenerator(
 
         val prompt = promptBuilder.build(diff, settings.promptStyle)
         val selection = providerRegistry.select(settings)
-        val message = CommitMessageFormatter.format(
-            selection.provider.generate(selection.model, prompt)
-        )
+        var streamedRaw = ""
+        val rawMessage = selection.provider.generateStream(selection.model, prompt) { chunk ->
+            streamedRaw += chunk
+            onUpdate(streamedRaw)
+        }
+        val message = CommitMessageFormatter.format(rawMessage.ifBlank { streamedRaw })
+        if (message.isNotBlank()) {
+            onUpdate(message)
+        }
 
         return if (message.isBlank()) {
             CommitMessageGeneration.EmptyResponse

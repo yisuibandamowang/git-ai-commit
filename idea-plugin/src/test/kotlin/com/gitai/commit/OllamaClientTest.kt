@@ -12,6 +12,7 @@ import java.net.http.HttpResponse
 import java.time.Duration
 import java.util.Optional
 import java.util.concurrent.Executor
+import java.util.stream.Stream
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLParameters
 import javax.net.ssl.SSLSession
@@ -24,7 +25,7 @@ class OllamaClientTest {
     fun parsesOllamaResponseText() {
         val client = OllamaClient(
             "http://localhost:11434",
-            FakeHttpClient(200, "{\"response\":\"feat: add commit message\"}"),
+            FakeHttpClient(200, Stream.of("{\"response\":\"feat: add commit message\"}")),
             ObjectMapper()
         )
         assertEquals("feat: add commit message", client.generate("qwen2.5-coder:7b", "prompt"))
@@ -34,7 +35,7 @@ class OllamaClientTest {
     fun failsOnHttpError() {
         val client = OllamaClient(
             "http://localhost:11434",
-            FakeHttpClient(500, "{\"error\":\"boom\"}"),
+            FakeHttpClient(500, Stream.of("{\"error\":\"boom\"}")),
             ObjectMapper()
         )
         assertFailsWith<java.io.IOException> {
@@ -44,7 +45,7 @@ class OllamaClientTest {
 
     private class FakeHttpClient(
         private val code: Int,
-        private val body: String
+        private val body: Stream<String>
     ) : HttpClient() {
         override fun <T : Any?> send(request: HttpRequest, responseBodyHandler: HttpResponse.BodyHandler<T>): HttpResponse<T> {
             @Suppress("UNCHECKED_CAST")
