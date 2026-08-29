@@ -10,6 +10,7 @@ object GitAiCommitCommand {
         repoRoot: Path?,
         generateMessage: (GitAiConfig, Path) -> CommitMessageGeneration,
         loadMergedConfig: (Path) -> GitAiConfig,
+        messageStyleOverride: String? = null,
         stdout: PrintStream,
         stderr: PrintStream
     ): Int {
@@ -19,6 +20,9 @@ object GitAiCommitCommand {
         }
 
         val config = loadMergedConfig(root)
+        if (!messageStyleOverride.isNullOrBlank()) {
+            config.messageStyle = messageStyleOverride
+        }
         return when (val result = generateMessage(config, root)) {
             CommitMessageGeneration.EmptyDiff -> {
                 stderr.println("没有检测到 git diff，先修改文件再试。")

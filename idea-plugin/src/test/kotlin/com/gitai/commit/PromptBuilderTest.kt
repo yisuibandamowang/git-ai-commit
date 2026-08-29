@@ -18,4 +18,10 @@ class PromptBuilderTest {
         assertContains(prompt, "第一行必须直接是最终提交信息")
         assertContains(prompt, "不要使用“核心功能”")
     }
+
+    @Test
+    fun buildsDetailedPromptWithBulletBodyInstruction() {
+        val prompt = PromptBuilder().build("diff --git a/x b/x", "conventional-commits", "detailed")
+        assertContains(prompt, "subject + 空行 + 若干 bullet body")
+    }
 }

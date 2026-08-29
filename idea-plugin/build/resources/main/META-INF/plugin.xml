@@ -1,7 +1,7 @@
 <idea-plugin>
   <idea-version since-build="242" until-build="253.*" />
   <change-notes><![CDATA[Add configurable model providers and structured diff prompting.]]></change-notes>
-  <version>0.1.24</version>
+  <version>0.1.25</version>
   <id>com.gitai.commit</id>
   <name>Git AI Commit</name>
   <vendor>Codex</vendor>

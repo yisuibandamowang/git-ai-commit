@@ -9,10 +9,18 @@ object CommitMessageFormatter {
     private val subjectPattern = Regex("""(?i)^[a-z][a-z0-9-]*(?:\([^)]+\))?:\s+\S.*$""")
     private val conventionalPrefixPattern = Regex("""(?i)^([a-z][a-z0-9-]*(?:\([^)]+\))?):\s*(\S.*)$""")
 
-    fun format(message: String): String {
+    fun format(message: String, messageStyle: String = "short"): String {
         val unwrapped = unwrapModelResponse(message)
         if (unwrapped.isBlank()) return ""
 
+        if (messageStyle == "detailed") {
+            return formatDetailed(unwrapped)
+        }
+
+        return formatShort(unwrapped)
+    }
+
+    private fun formatShort(unwrapped: String): String {
         val subject = unwrapped.lineSequence()
             .map { cleanLine(it) }
             .filter { it.isNotBlank() }
@@ -24,6 +32,24 @@ object CommitMessageFormatter {
             ?: normalizeSubject(cleanLine(unwrapped.lineSequence().firstOrNull { it.isNotBlank() }.orEmpty()), unwrapped)
 
         return ensureConventionalPrefix(normalized).take(maxLength).trimEnd()
+    }
+
+    private fun formatDetailed(unwrapped: String): String {
+        val lines = unwrapped.lineSequence().toList()
+        val subjectIndex = findSubjectIndex(lines, unwrapped)
+        val subjectSource = if (subjectIndex >= 0) {
+            cleanLine(lines[subjectIndex])
+        } else {
+            cleanLine(lines.firstOrNull { it.isNotBlank() }.orEmpty())
+        }
+        val normalizedSubject = ensureConventionalPrefix(normalizeSubject(subjectSource, unwrapped)).take(maxLength).trimEnd()
+        val bodyLines = buildDetailedBody(lines, subjectIndex, unwrapped)
+
+        if (bodyLines.isEmpty()) {
+            return formatShort(unwrapped)
+        }
+
+        return listOf(normalizedSubject, "", *bodyLines.toTypedArray()).joinToString("\n").trimEnd()
     }
 
     private fun unwrapModelResponse(message: String): String {
@@ -68,6 +94,45 @@ object CommitMessageFormatter {
             line.length <= maxLength &&
             !line.endsWith(":") &&
             !line.endsWith("：")
+
+    private fun findSubjectIndex(lines: List<String>, fullText: String): Int {
+        val subject = lines
+            .mapIndexed { index, line -> index to cleanLine(line) }
+            .firstOrNull { (_, line) -> line.isNotBlank() && (looksLikeSubject(line) || looksLikeShortChineseSentence(line)) }
+        if (subject != null) return subject.first
+
+        val firstNonBlank = lines.indexOfFirst { it.isNotBlank() }
+        if (firstNonBlank >= 0) return firstNonBlank
+
+        return if (summarizeVerbose(fullText) != null) 0 else -1
+    }
+
+    private fun buildDetailedBody(lines: List<String>, subjectIndex: Int, fullText: String): List<String> {
+        val startIndex = if (subjectIndex >= 0) subjectIndex + 1 else 0
+        val bodyLines = lines
+            .drop(startIndex)
+            .map { cleanLine(it) }
+            .filter { it.isNotBlank() }
+            .mapNotNull { toBulletLine(it) }
+
+        if (bodyLines.isNotEmpty()) return bodyLines
+
+        val summary = summarizeVerbose(fullText) ?: summarizeByKeywords(fullText.lowercase())
+        return if (summary.isBlank()) emptyList() else listOf("- $summary")
+    }
+
+    private fun toBulletLine(line: String): String? {
+        val cleaned = stripBulletMarker(line)
+        if (cleaned.isBlank()) return null
+        return if (cleaned.startsWith("- ")) cleaned else "- $cleaned"
+    }
+
+    private fun stripBulletMarker(line: String): String =
+        line
+            .replace(Regex("""^[-*•]\s*"""), "")
+            .replace(Regex("""^\d+[.)]\s*"""), "")
+            .replace(Regex("""\s+"""), " ")
+            .trim()
 
     private fun summarizeVerbose(text: String): String? {
         val lower = text.lowercase()

@@ -42,7 +42,8 @@ class CommitMessageGeneratorTest {
                 GitAiSettingsStateData(
                     providerId = "fake",
                     model = "",
-                    promptStyle = "conventional-commits"
+                    promptStyle = "conventional-commits",
+                    messageStyle = "short"
                 )
             },
             providerRegistry = registry

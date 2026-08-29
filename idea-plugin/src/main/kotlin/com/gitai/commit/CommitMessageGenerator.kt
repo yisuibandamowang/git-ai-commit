@@ -25,14 +25,14 @@ class CommitMessageGenerator(
         val diff = diffFilter.filter(rawDiff)
         if (diff.isBlank()) return CommitMessageGeneration.EmptyDiff
 
-        val prompt = promptBuilder.build(diff, settings.promptStyle)
+        val prompt = promptBuilder.build(diff, settings.promptStyle, settings.messageStyle)
         val selection = providerRegistry.select(settings)
         var streamedRaw = ""
         val rawMessage = selection.provider.generateStream(selection.model, prompt) { chunk ->
             streamedRaw += chunk
             onUpdate(streamedRaw)
         }
-        val message = CommitMessageFormatter.format(rawMessage.ifBlank { streamedRaw })
+        val message = CommitMessageFormatter.format(rawMessage.ifBlank { streamedRaw }, settings.messageStyle)
         if (message.isNotBlank()) {
             onUpdate(message)
         }

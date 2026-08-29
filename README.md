@@ -56,6 +56,7 @@ git-ai-commit commit
 ```bash
 git-ai-commit config set providerId=deepseek openAiCompatibleApiKey=<your_api_key>
 git-ai-commit config set model=deepseek-v4-flash
+git-ai-commit commit --message-style detailed
 ```
 
 ## 支持的模型服务商
@@ -81,6 +82,7 @@ git-ai-commit config set model=deepseek-v4-flash
 | `providerId` | 服务商标识，见上表 |
 | `model` | 模型名 |
 | `promptStyle` | 提交信息风格，默认 `conventional-commits` |
+| `messageStyle` | 输出风格，`short` 或 `detailed`，默认 `short` |
 | `openAiCompatibleApiKey` | 统一的 API key（所有 OpenAI 兼容厂商共用） |
 | `ollamaBaseUrl` | Ollama 地址 |
 | `deepSeekBaseUrl` | DeepSeek 地址 |
@@ -103,6 +105,9 @@ git-ai-commit config set model=deepseek-v4-flash
 ```bash
 # 生成 commit 命令预览
 git-ai-commit commit
+
+# 临时切换输出风格
+git-ai-commit commit --message-style detailed
 
 # 查看配置（--scope 可选 global/project/merged，默认 merged）
 git-ai-commit config get [key] [--scope global|project|merged]

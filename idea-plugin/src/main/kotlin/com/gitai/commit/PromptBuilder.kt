@@ -3,18 +3,20 @@ package com.gitai.commit
 class PromptBuilder {
     private val analyzer = DiffAnalyzer()
 
-    fun build(diff: String, style: String): String {
+    fun build(diff: String, style: String, messageStyle: String = "short"): String {
         val summary = analyzer.analyze(diff)
+        val detailed = messageStyle == "detailed"
         return """
             你是一位资深工程师，擅长根据 git diff 生成一句中文提交信息。
             风格：$style
+            输出模式：${if (detailed) "subject + 空行 + 若干 bullet body" else "short single-line"}
 
             规则：
-            - 只输出一句 Conventional Commit 格式的中文提交信息，例如：feat: 优化提交信息生成。
-            - 不要输出 JSON、英文提交信息或多行内容。
-            - 第一行必须直接是最终提交信息，不要前言，不要解释，不要总结 patchset。
-            - 长度尽量控制在30字以内。
-            - 如果涉及测试、配置、重命名或重构，要在提交信息里体现。
+            ${if (detailed) "- 第一行必须是 Conventional Commit 格式的中文 subject，例如：feat: 优化提交信息生成。" else "- 只输出一句 Conventional Commit 格式的中文提交信息，例如：feat: 优化提交信息生成。"}
+            ${if (detailed) "- subject 后空一行，再输出若干 bullet body。" else "- 不要输出 JSON、英文提交信息或多行内容。"}
+            ${if (detailed) "- bullet body 用 - 开头，每条尽量具体，避免空泛描述。" else "- 第一行必须直接是最终提交信息，不要前言，不要解释，不要总结 patchset。"}
+            ${if (detailed) "- 不要输出 JSON、英文提交信息或额外解释。" else "- 长度尽量控制在30字以内。"}
+            ${if (detailed) "- 遇到测试、配置、重命名或重构变化，要在 bullet body 里体现。" else "- 如果涉及测试、配置、重命名或重构，要在提交信息里体现。"}
             - 不要使用“核心功能”“主要功能”“完善能力”这类泛化描述，要点出具体模块或能力。
 
             结构化变更摘要：

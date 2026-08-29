@@ -14,6 +14,7 @@ class GitAiConfigStoreTest {
             providerId = "deepseek"
             model = "deepseek-v4-flash"
             promptStyle = "conventional-commits"
+            messageStyle = "detailed"
             openAiCompatibleApiKey = "sk-test"
         }
 
@@ -24,6 +25,7 @@ class GitAiConfigStoreTest {
         assertEquals("deepseek", loaded.providerId)
         assertEquals("deepseek-v4-flash", loaded.model)
         assertEquals("conventional-commits", loaded.promptStyle)
+        assertEquals("detailed", loaded.messageStyle)
         assertEquals("sk-test", loaded.openAiCompatibleApiKey)
     }
 
@@ -40,12 +42,14 @@ class GitAiConfigStoreTest {
         })
         store.save(ConfigScope.PROJECT, repoRoot, GitAiConfig().apply {
             providerId = "deepseek"
+            messageStyle = "detailed"
             openAiCompatibleApiKey = "sk-test"
         })
 
         val merged = GitAiConfigResolver(store).loadMerged(repoRoot)
         assertEquals("deepseek", merged.providerId)
         assertEquals("qwen2.5-coder:7b", merged.model)
+        assertEquals("detailed", merged.messageStyle)
         assertEquals("sk-test", merged.openAiCompatibleApiKey)
     }
 

@@ -4,7 +4,7 @@ import com.gitai.commit.config.ConfigScope
 
 sealed class CliCommand {
     data object Help : CliCommand()
-    data object Commit : CliCommand()
+    data class Commit(val messageStyle: String? = null) : CliCommand()
 
     sealed class Config : CliCommand() {
         data class Get(val key: String?, val scope: ConfigScope) : Config()
@@ -17,11 +17,16 @@ class CliCommandParser {
     fun parse(args: Array<String>): CliCommand {
         if (args.isEmpty()) return CliCommand.Help
         return when (args[0]) {
-            "commit" -> CliCommand.Commit
+            "commit" -> parseCommit(args.drop(1))
             "config" -> parseConfig(args.drop(1))
             "help", "--help", "-h" -> CliCommand.Help
             else -> throw IllegalArgumentException("Unknown command: ${args[0]}")
         }
+    }
+
+    private fun parseCommit(args: List<String>): CliCommand.Commit {
+        val messageStyle = parseMessageStyle(args)
+        return CliCommand.Commit(messageStyle = messageStyle)
     }
 
     private fun parseConfig(args: List<String>): CliCommand {
@@ -76,6 +81,21 @@ class CliCommandParser {
             }
         }
         return result
+    }
+
+    private fun parseMessageStyle(args: List<String>): String? {
+        val styleToken = args.firstOrNull { it == "--message-style" || it.startsWith("--message-style=") }
+            ?: return null
+        val rawStyle = when {
+            styleToken.startsWith("--message-style=") -> styleToken.substringAfter('=')
+            else -> args.getOrNull(args.indexOf(styleToken) + 1)
+        } ?: throw IllegalArgumentException("Missing value after --message-style")
+
+        return when (rawStyle.lowercase()) {
+            "short" -> "short"
+            "detailed" -> "detailed"
+            else -> throw IllegalArgumentException("Unknown message style: $rawStyle")
+        }
     }
 
     private fun parseScope(args: List<String>, defaultScope: ConfigScope): ConfigScope {

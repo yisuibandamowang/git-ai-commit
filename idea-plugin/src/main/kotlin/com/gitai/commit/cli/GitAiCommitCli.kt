@@ -27,10 +27,11 @@ class GitAiCommitCli(
                     printUsage(stdout)
                     0
                 }
-                CliCommand.Commit -> GitAiCommitCommand.execute(
+                is CliCommand.Commit -> GitAiCommitCommand.execute(
                     repoRoot = repoFinder(cwd),
                     generateMessage = generateMessage,
                     loadMergedConfig = { GitAiConfigResolver(configStore).loadMerged(it) },
+                    messageStyleOverride = command.messageStyle,
                     stdout = stdout,
                     stderr = stderr
                 )
@@ -54,6 +55,7 @@ class GitAiCommitCli(
         out.println("git-ai-commit config get [key] [--scope global|project|merged]")
         out.println("git-ai-commit config set key=value [key=value ...] [--scope global|project]")
         out.println("git-ai-commit config list [--scope global|project|merged]")
+        out.println("git-ai-commit commit [--message-style short|detailed]")
     }
 
     companion object {

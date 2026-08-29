@@ -2,6 +2,7 @@ package com.gitai.commit
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertContains
 
 class CommitMessageFormatterTest {
     @Test
@@ -62,5 +63,15 @@ class CommitMessageFormatterTest {
         val formatted = CommitMessageFormatter.format("fix(core): 修复提交信息为空的问题")
 
         assertEquals("fix(core): 修复提交信息为空的问题", formatted)
+    }
+
+    @Test
+    fun formatsDetailedOutputAsSubjectPlusBullets() {
+        val formatted = CommitMessageFormatter.format(
+            "feat: 优化提交信息生成\n\n- 保持短格式\n- 支持详细格式",
+            "detailed"
+        )
+
+        assertContains(formatted, "\n\n- ")
     }
 }

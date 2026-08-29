@@ -16,6 +16,7 @@ data class GitAiSettingsStateData(
     var glmBaseUrl: String = "https://open.bigmodel.cn/api/paas/v4",
     var model: String = "qwen2.5-coder:7b",
     var promptStyle: String = "conventional-commits",
+    var messageStyle: String = "short",
     var openAiCompatibleBaseUrl: String = "https://api.openai.com/v1",
     var openAiCompatibleApiKey: String = ""
 )
@@ -65,6 +66,10 @@ class GitAiSettingsState : PersistentStateComponent<GitAiSettingsStateData> {
     var promptStyle: String
         get() = state.promptStyle
         set(value) { state.promptStyle = value }
+
+    var messageStyle: String
+        get() = state.messageStyle
+        set(value) { state.messageStyle = value }
 
     var openAiCompatibleBaseUrl: String
         get() = state.openAiCompatibleBaseUrl

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Created-By: Gradle 9.2.0
-Version: 0.1.24
+Version: 0.1.25
 Build-JVM: 21.0.12 (Azul Systems, Inc. 21.0.12+8-LTS)
 Build-OS: Mac OS X 14.8 aarch64
 Build-Plugin: IntelliJ Platform Gradle Plugin

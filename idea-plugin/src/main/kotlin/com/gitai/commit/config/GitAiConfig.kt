@@ -6,6 +6,7 @@ class GitAiConfig {
     var providerId: String? = null
     var model: String? = null
     var promptStyle: String? = null
+    var messageStyle: String? = null
     var ollamaBaseUrl: String? = null
     var deepSeekBaseUrl: String? = null
     var aliyunBaseUrl: String? = null
@@ -19,6 +20,7 @@ class GitAiConfig {
         other.providerId?.let { providerId = it }
         other.model?.let { model = it }
         other.promptStyle?.let { promptStyle = it }
+        other.messageStyle?.let { messageStyle = it }
         other.ollamaBaseUrl?.let { ollamaBaseUrl = it }
         other.deepSeekBaseUrl?.let { deepSeekBaseUrl = it }
         other.aliyunBaseUrl?.let { aliyunBaseUrl = it }
@@ -41,6 +43,7 @@ class GitAiConfig {
             glmBaseUrl = glmBaseUrl ?: defaults.glmBaseUrl.orEmpty(),
             model = model ?: defaults.model.orEmpty(),
             promptStyle = promptStyle ?: defaults.promptStyle.orEmpty(),
+            messageStyle = messageStyle ?: defaults.messageStyle.orEmpty(),
             openAiCompatibleBaseUrl = openAiCompatibleBaseUrl ?: defaults.openAiCompatibleBaseUrl.orEmpty(),
             openAiCompatibleApiKey = openAiCompatibleApiKey ?: defaults.openAiCompatibleApiKey.orEmpty()
         )
@@ -58,6 +61,7 @@ class GitAiConfig {
             kimiBaseUrl = "https://api.moonshot.cn/v1"
             glmBaseUrl = "https://open.bigmodel.cn/api/paas/v4"
             openAiCompatibleBaseUrl = "https://api.openai.com/v1"
+            messageStyle = "short"
             openAiCompatibleApiKey = ""
         }
     }
@@ -73,6 +77,7 @@ fun GitAiSettingsStateData.toGitAiConfig(): GitAiConfig = GitAiConfig().apply {
     miniMaxBaseUrl = this@toGitAiConfig.miniMaxBaseUrl
     kimiBaseUrl = this@toGitAiConfig.kimiBaseUrl
     glmBaseUrl = this@toGitAiConfig.glmBaseUrl
+    messageStyle = this@toGitAiConfig.messageStyle
     openAiCompatibleBaseUrl = this@toGitAiConfig.openAiCompatibleBaseUrl
     openAiCompatibleApiKey = this@toGitAiConfig.openAiCompatibleApiKey
 }

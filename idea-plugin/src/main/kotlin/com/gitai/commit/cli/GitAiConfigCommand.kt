@@ -109,6 +109,7 @@ object GitAiConfigCommand {
         config.providerId?.let { add("providerId" to it) }
         config.model?.let { add("model" to it) }
         config.promptStyle?.let { add("promptStyle" to it) }
+        config.messageStyle?.let { add("messageStyle" to it) }
         config.ollamaBaseUrl?.let { add("ollamaBaseUrl" to it) }
         config.deepSeekBaseUrl?.let { add("deepSeekBaseUrl" to it) }
         config.aliyunBaseUrl?.let { add("aliyunBaseUrl" to it) }
@@ -123,6 +124,7 @@ object GitAiConfigCommand {
         "providerId" -> config.providerId.orEmpty()
         "model" -> config.model.orEmpty()
         "promptStyle" -> config.promptStyle.orEmpty()
+        "messageStyle" -> config.messageStyle.orEmpty()
         "ollamaBaseUrl" -> config.ollamaBaseUrl.orEmpty()
         "deepSeekBaseUrl" -> config.deepSeekBaseUrl.orEmpty()
         "aliyunBaseUrl" -> config.aliyunBaseUrl.orEmpty()
@@ -139,6 +141,7 @@ object GitAiConfigCommand {
             "providerId" -> config.providerId = value
             "model" -> config.model = value
             "promptStyle" -> config.promptStyle = value
+            "messageStyle" -> config.messageStyle = value
             "ollamaBaseUrl" -> config.ollamaBaseUrl = value
             "deepSeekBaseUrl" -> config.deepSeekBaseUrl = value
             "aliyunBaseUrl" -> config.aliyunBaseUrl = value

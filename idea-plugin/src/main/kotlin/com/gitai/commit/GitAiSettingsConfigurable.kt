@@ -20,6 +20,7 @@ class GitAiSettingsConfigurable : Configurable {
     private var openAiBaseUrlField = JTextField()
     private var modelField = JTextField()
     private var promptStyleField = JTextField()
+    private val messageStyleField = JComboBox(arrayOf("short", "detailed"))
     private var openAiApiKeyField = JPasswordField()
 
     override fun getDisplayName(): String = "Git AI Commit"
@@ -62,6 +63,9 @@ class GitAiSettingsConfigurable : Configurable {
             row("Prompt style") {
                 cell(promptStyleField).align(AlignX.FILL)
             }
+            row("Message style") {
+                cell(messageStyleField).align(AlignX.FILL)
+            }
         }
         providerField.addItemListener { syncFieldsForProvider() }
         syncFieldsForProvider()
@@ -95,8 +99,9 @@ class GitAiSettingsConfigurable : Configurable {
             miniMaxBaseUrlField.text != settings.miniMaxBaseUrl ||
             kimiBaseUrlField.text != settings.kimiBaseUrl ||
             glmBaseUrlField.text != settings.glmBaseUrl ||
-            modelField.text != settings.model ||
-            promptStyleField.text != settings.promptStyle ||
+        modelField.text != settings.model ||
+        promptStyleField.text != settings.promptStyle ||
+            messageStyleField.selectedItem != settings.messageStyle ||
             openAiBaseUrlField.text != settings.openAiCompatibleBaseUrl ||
             openAiApiKeyField.password.concatToString() != settings.openAiCompatibleApiKey
     }
@@ -112,6 +117,7 @@ class GitAiSettingsConfigurable : Configurable {
         settings.glmBaseUrl = glmBaseUrlField.text.trim()
         settings.model = modelField.text.trim()
         settings.promptStyle = promptStyleField.text.trim()
+        settings.messageStyle = messageStyleField.selectedItem?.toString().orEmpty()
         settings.openAiCompatibleBaseUrl = openAiBaseUrlField.text.trim()
         settings.openAiCompatibleApiKey = openAiApiKeyField.password.concatToString().trim()
     }
@@ -127,6 +133,7 @@ class GitAiSettingsConfigurable : Configurable {
         glmBaseUrlField.text = settings.glmBaseUrl
         modelField.text = settings.model
         promptStyleField.text = settings.promptStyle
+        messageStyleField.selectedItem = settings.messageStyle
         openAiBaseUrlField.text = settings.openAiCompatibleBaseUrl
         openAiApiKeyField.text = settings.openAiCompatibleApiKey
         syncFieldsForProvider()
@@ -143,6 +150,9 @@ class GitAiSettingsConfigurable : Configurable {
         openAiBaseUrlField = JTextField()
         modelField = JTextField()
         promptStyleField = JTextField()
+        messageStyleField.removeAllItems()
+        messageStyleField.addItem("short")
+        messageStyleField.addItem("detailed")
         openAiApiKeyField = JPasswordField()
     }
 }

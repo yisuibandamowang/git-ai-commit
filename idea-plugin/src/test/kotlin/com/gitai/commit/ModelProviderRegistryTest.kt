@@ -3,6 +3,7 @@ package com.gitai.commit
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import java.awt.Component
 import java.awt.Container
 import javax.swing.JComboBox
@@ -35,6 +36,14 @@ class ModelProviderRegistryTest {
         assertContains(comboBox.items(), "deepseek")
     }
 
+    @Test
+    fun settingsConfigurableIncludesMessageStyleSelector() {
+        val component = GitAiSettingsConfigurable().createComponent()
+        val comboBoxes = findAllComboBoxes(component)
+
+        assertTrue(comboBoxes.any { it.items().containsAll(listOf("short", "detailed")) })
+    }
+
     private fun findFirstComboBox(component: Component): JComboBox<*> {
         if (component is JComboBox<*>) return component
         if (component is Container) {
@@ -43,6 +52,20 @@ class ModelProviderRegistryTest {
             }
         }
         error("Provider combo box not found")
+    }
+
+    private fun findAllComboBoxes(component: Component): List<JComboBox<*>> {
+        val result = mutableListOf<JComboBox<*>>()
+        fun walk(node: Component) {
+            if (node is JComboBox<*>) {
+                result += node
+            }
+            if (node is Container) {
+                node.components.forEach(::walk)
+            }
+        }
+        walk(component)
+        return result
     }
 
     private fun JComboBox<*>.items(): List<String> =

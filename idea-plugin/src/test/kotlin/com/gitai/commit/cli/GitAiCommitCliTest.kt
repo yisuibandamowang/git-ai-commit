@@ -41,13 +41,16 @@ class GitAiCommitCliTest {
         val stdout = ByteArrayOutputStream()
         val cli = testCli(repoRoot = repoRoot, store = store, stdout = stdout)
 
-        assertEquals(0, cli.run(arrayOf("config", "set", "providerId=deepseek")))
+        assertEquals(0, cli.run(arrayOf("config", "set", "providerId=deepseek", "messageStyle=detailed")))
         assertEquals(0, cli.run(arrayOf("config", "get", "providerId")))
+        assertEquals(0, cli.run(arrayOf("config", "get", "messageStyle")))
 
         val global = store.load(ConfigScope.GLOBAL, null)
         assertNotNull(global)
         assertEquals("deepseek", global.providerId)
+        assertEquals("detailed", global.messageStyle)
         assertContains(stdout.text(), "deepseek\n")
+        assertContains(stdout.text(), "detailed\n")
     }
 
     @Test
@@ -62,6 +65,25 @@ class GitAiCommitCliTest {
         val project = store.load(ConfigScope.PROJECT, repoRoot)
         assertNotNull(project)
         assertEquals("deepseek-v4-flash", project.model)
+    }
+
+    @Test
+    fun commitCommandCanOverrideMessageStyleFromCliArgument() {
+        val repoRoot = Files.createTempDirectory("git-ai-commit-repo")
+        val stdout = ByteArrayOutputStream()
+        var seenStyle: String? = null
+        val cli = testCli(
+            repoRoot = repoRoot,
+            stdout = stdout,
+            generateMessage = { config, _ ->
+                seenStyle = config.messageStyle
+                CommitMessageGeneration.Success("feat: 优化提交信息生成\n\n- 保持短格式\n- 支持详细格式")
+            }
+        )
+
+        assertEquals(0, cli.run(arrayOf("commit", "--message-style", "detailed")))
+        assertEquals("detailed", seenStyle)
+        assertContains(stdout.text(), "git commit -m \"feat: 优化提交信息生成\" -m \$'- 保持短格式\\n- 支持详细格式'")
     }
 
     private fun testCli(
