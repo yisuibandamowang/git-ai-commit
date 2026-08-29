@@ -15,8 +15,7 @@ data class OpenAiChatMessage(
 
 data class OpenAiChatCompletionRequest(
     val model: String,
-    val messages: List<OpenAiChatMessage>,
-    val temperature: Double = 0.0
+    val messages: List<OpenAiChatMessage>
 )
 
 class OpenAiCompatibleClient(

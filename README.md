@@ -66,7 +66,7 @@ git-ai-commit config set model=deepseek-v4-flash
 | `deepseek` | DeepSeek | `https://api.deepseek.com` | `deepseek-v4-flash` |
 | `aliyun` | 阿里云百炼（DashScope） | `https://dashscope.aliyuncs.com/compatible-mode/v1` | `qwen-plus` |
 | `minimax` | MiniMax | `https://api.minimaxi.com/v1` | `MiniMax-Text-01` |
-| `kimi` | Kimi（Moonshot） | `https://api.moonshot.cn/v1` | `moonshot-v1-8k` |
+| `kimi` | Kimi（Moonshot） | `https://api.moonshot.cn/v1` | `kimi-k2.5` |
 | `glm` | 智谱 GLM | `https://open.bigmodel.cn/api/paas/v4` | `glm-4-flash` |
 | `openai-compatible` | 任意 OpenAI 兼容接口 | `https://api.openai.com/v1` | 需自行填写 |
 
