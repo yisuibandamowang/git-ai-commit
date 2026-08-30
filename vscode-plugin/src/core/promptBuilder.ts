@@ -1,0 +1,46 @@
+import { DiffAnalyzer } from './diffAnalyzer';
+
+/**
+ * Prompt builder matching the Kotlin `PromptBuilder`.
+ * Builds the Chinese prompt for the LLM using the diff summary.
+ */
+export class PromptBuilder {
+    private analyzer = new DiffAnalyzer();
+
+    build(diff: string, style: string, messageStyle: string = 'short'): string {
+        const summary = this.analyzer.analyze(diff);
+        const isDetailed = messageStyle === 'detailed';
+
+        return [
+            '你是一位资深工程师，擅长根据 git diff 生成一句中文提交信息。',
+            `风格：${style}`,
+            `输出模式：${isDetailed ? 'subject + 空行 + 若干 bullet body' : 'short single-line'}`,
+            '',
+            '规则：',
+            isDetailed
+                ? '- 第一行必须是 Conventional Commit 格式的中文 subject，例如：feat: 优化提交信息生成。'
+                : '- 只输出一句 Conventional Commit 格式的中文提交信息，例如：feat: 优化提交信息生成。',
+            isDetailed
+                ? '- subject 后空一行，再输出若干 bullet body。'
+                : '- 不要输出 JSON、英文提交信息或多行内容。',
+            isDetailed
+                ? '- bullet body 用 - 开头，每条尽量具体，避免空泛描述。'
+                : '- 第一行必须直接是最终提交信息，不要前言，不要解释，不要总结 patchset。',
+            isDetailed
+                ? '- 不要输出 JSON、英文提交信息或额外解释。'
+                : '- 长度尽量控制在30字以内。',
+            isDetailed
+                ? '- 遇到测试、配置、重命名或重构变化，要在 bullet body 里体现。'
+                : '- 如果涉及测试、配置、重命名或重构，要在提交信息里体现。',
+            isDetailed
+                ? '- 不要使用"核心功能""主要功能""完善能力"这类泛化描述，要点出具体模块或能力。'
+                : '- 不要使用"核心功能""主要功能""完善能力"这类泛化描述，要点出具体模块或能力。',
+            '',
+            `结构化变更摘要：`,
+            `${summary.renderForPrompt()}`,
+            '',
+            `原始 diff：`,
+            `${diff}`,
+        ].join('\n');
+    }
+}

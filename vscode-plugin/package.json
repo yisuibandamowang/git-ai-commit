@@ -1,0 +1,164 @@
+{
+  "name": "git-ai-commit",
+  "displayName": "Git AI Commit",
+  "version": "0.1.25",
+  "description": "Generate commit messages from git diff using local or compatible model providers.",
+  "publisher": "codex",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codex/git-ai-commit"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "SCM Providers",
+    "Other"
+  ],
+  "keywords": [
+    "git",
+    "commit",
+    "ai",
+    "ollama",
+    "openai",
+    "deepseek",
+    "conventional-commits"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "git-ai-commit.generateCommitMessage",
+        "title": "Generate Commit Message",
+        "icon": "$(sparkle)"
+      }
+    ],
+    "menus": {
+      "scm/title": [
+        {
+          "command": "git-ai-commit.generateCommitMessage",
+          "when": "scmProvider == git",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "git-ai-commit.generateCommitMessage",
+          "when": "scmProvider == git"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Git AI Commit",
+      "properties": {
+        "git-ai-commit.providerId": {
+          "type": "string",
+          "default": "ollama",
+          "enum": [
+            "ollama",
+            "deepseek",
+            "aliyun",
+            "minimax",
+            "kimi",
+            "glm",
+            "openai-compatible"
+          ],
+          "enumDescriptions": [
+            "Ollama (local)",
+            "DeepSeek",
+            "Aliyun DashScope",
+            "MiniMax",
+            "Kimi (Moonshot)",
+            "GLM (Zhipu)",
+            "OpenAI Compatible"
+          ],
+          "description": "The model provider to use for generating commit messages."
+        },
+        "git-ai-commit.model": {
+          "type": "string",
+          "default": "",
+          "description": "The model name to use. Leave empty to use the provider's default model."
+        },
+        "git-ai-commit.promptStyle": {
+          "type": "string",
+          "default": "conventional-commits",
+          "description": "The prompt style for generating commit messages."
+        },
+        "git-ai-commit.messageStyle": {
+          "type": "string",
+          "default": "short",
+          "enum": [
+            "short",
+            "detailed"
+          ],
+          "enumDescriptions": [
+            "Single-line subject only",
+            "Subject line plus bullet body"
+          ],
+          "description": "The output style for generated commit messages."
+        },
+        "git-ai-commit.ollamaBaseUrl": {
+          "type": "string",
+          "default": "http://localhost:11434",
+          "description": "Base URL for the Ollama API."
+        },
+        "git-ai-commit.deepSeekBaseUrl": {
+          "type": "string",
+          "default": "https://api.deepseek.com",
+          "description": "Base URL for the DeepSeek API."
+        },
+        "git-ai-commit.aliyunBaseUrl": {
+          "type": "string",
+          "default": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "description": "Base URL for the Aliyun DashScope API."
+        },
+        "git-ai-commit.miniMaxBaseUrl": {
+          "type": "string",
+          "default": "https://api.minimaxi.com/v1",
+          "description": "Base URL for the MiniMax API."
+        },
+        "git-ai-commit.kimiBaseUrl": {
+          "type": "string",
+          "default": "https://api.moonshot.cn/v1",
+          "description": "Base URL for the Kimi (Moonshot) API."
+        },
+        "git-ai-commit.glmBaseUrl": {
+          "type": "string",
+          "default": "https://open.bigmodel.cn/api/paas/v4",
+          "description": "Base URL for the GLM (Zhipu) API."
+        },
+        "git-ai-commit.openAiCompatibleBaseUrl": {
+          "type": "string",
+          "default": "https://api.openai.com/v1",
+          "description": "Base URL for the OpenAI-compatible API."
+        },
+        "git-ai-commit.openAiCompatibleApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API key for OpenAI-compatible providers (shared across all non-Ollama providers)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@vscode/vsce": "^3.9.2",
+    "eslint": "^8.57.0",
+    "typescript": "^5.5.0"
+  }
+}
