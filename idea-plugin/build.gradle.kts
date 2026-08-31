@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.gitai.commit"
-version = "0.1.25"
+version = "0.1.26"
 
 kotlin {
     jvmToolchain(21)

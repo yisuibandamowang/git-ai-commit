@@ -23,7 +23,7 @@ class GitAiCommitCliTest {
             repoRoot = repoRoot,
             stdout = stdout,
             stderr = stderr,
-            generateMessage = { _, _ -> CommitMessageGeneration.Success("feat: add cli support") }
+            generateMessage = { _, _, _ -> CommitMessageGeneration.Success("feat: add cli support") }
         )
 
         val exitCode = cli.run(arrayOf("commit"))
@@ -31,6 +31,30 @@ class GitAiCommitCliTest {
         assertEquals(0, exitCode)
         assertEquals("git commit -m \"feat: add cli support\"\n", stdout.text())
         assertEquals("", stderr.text())
+    }
+
+    @Test
+    fun commitCommandStreamsProgressToStderr() {
+        val repoRoot = Files.createTempDirectory("git-ai-commit-repo")
+        val stdout = ByteArrayOutputStream()
+        val stderr = ByteArrayOutputStream()
+        val cli = testCli(
+            repoRoot = repoRoot,
+            stdout = stdout,
+            stderr = stderr,
+            generateMessage = { _, _, onUpdate ->
+                onUpdate("feat")
+                onUpdate("feat: add cli support")
+                CommitMessageGeneration.Success("feat: add cli support")
+            }
+        )
+
+        val exitCode = cli.run(arrayOf("commit"))
+
+        assertEquals(0, exitCode)
+        assertContains(stderr.text(), "生成中：feat\n")
+        assertContains(stderr.text(), "生成中：feat: add cli support\n")
+        assertEquals("git commit -m \"feat: add cli support\"\n", stdout.text())
     }
 
     @Test
@@ -75,7 +99,7 @@ class GitAiCommitCliTest {
         val cli = testCli(
             repoRoot = repoRoot,
             stdout = stdout,
-            generateMessage = { config, _ ->
+            generateMessage = { config, _, _ ->
                 seenStyle = config.messageStyle
                 CommitMessageGeneration.Success("feat: 优化提交信息生成\n\n- 保持短格式\n- 支持详细格式")
             }
@@ -91,7 +115,7 @@ class GitAiCommitCliTest {
         store: GitAiConfigStore = GitAiConfigStore(Files.createTempDirectory("git-ai-commit-home")),
         stdout: ByteArrayOutputStream = ByteArrayOutputStream(),
         stderr: ByteArrayOutputStream = ByteArrayOutputStream(),
-        generateMessage: (GitAiConfig, Path) -> CommitMessageGeneration = { _, _ ->
+        generateMessage: (GitAiConfig, Path, (String) -> Unit) -> CommitMessageGeneration = { _, _, _ ->
             CommitMessageGeneration.Success("feat: add cli support")
         }
     ): GitAiCommitCli =

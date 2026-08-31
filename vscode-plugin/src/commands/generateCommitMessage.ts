@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { CommitMessageGenerator } from '../core/commitMessageGenerator';
-import { GitAiSettings, normalizeCommitMessageStyle } from '../providers/modelProvider';
+import { readGitAiSettings } from './readGitAiSettings';
 
 /**
  * Command handler for generating commit messages.
@@ -66,23 +66,6 @@ export class GenerateCommitMessageCommand {
         );
     }
 
-}
-
-export function readGitAiSettings(config: Pick<vscode.WorkspaceConfiguration, 'get'>): GitAiSettings {
-    return {
-        providerId: config.get<string>('providerId', 'ollama'),
-        model: config.get<string>('model', ''),
-        promptStyle: config.get<string>('promptStyle', 'conventional-commits'),
-        messageStyle: normalizeCommitMessageStyle(config.get<string>('messageStyle', 'short')),
-        ollamaBaseUrl: config.get<string>('ollamaBaseUrl', 'http://localhost:11434'),
-        deepSeekBaseUrl: config.get<string>('deepSeekBaseUrl', 'https://api.deepseek.com'),
-        aliyunBaseUrl: config.get<string>('aliyunBaseUrl', 'https://dashscope.aliyuncs.com/compatible-mode/v1'),
-        miniMaxBaseUrl: config.get<string>('miniMaxBaseUrl', 'https://api.minimaxi.com/v1'),
-        kimiBaseUrl: config.get<string>('kimiBaseUrl', 'https://api.moonshot.cn/v1'),
-        glmBaseUrl: config.get<string>('glmBaseUrl', 'https://open.bigmodel.cn/api/paas/v4'),
-        openAiCompatibleBaseUrl: config.get<string>('openAiCompatibleBaseUrl', 'https://api.openai.com/v1'),
-        openAiCompatibleApiKey: config.get<string>('openAiCompatibleApiKey', ''),
-    };
 }
 
 /**

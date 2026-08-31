@@ -33,7 +33,7 @@ class GitAiCommitIntegrationTest {
         val stdout = ByteArrayOutputStream()
         val cli = GitAiCommitCli(
             configStore = store,
-            generateMessage = { config, _ ->
+            generateMessage = { config, _, _ ->
                 seenConfig = config
                 CommitMessageGeneration.Success("feat: use project config")
             },

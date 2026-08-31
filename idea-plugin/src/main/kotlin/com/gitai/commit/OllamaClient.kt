@@ -1,13 +1,11 @@
 package com.gitai.commit
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import java.io.IOException
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
-import java.util.stream.Stream
 
 data class CommitMessageRequest(
     val model: String,
@@ -28,7 +26,7 @@ class OllamaClient(
     }
 
     override fun generateStream(model: String, prompt: String, onChunk: (String) -> Unit): String {
-        val body = objectMapper.writeValueAsString(CommitMessageRequest(model, prompt))
+        val body = objectMapper.writeValueAsString(CommitMessageRequest(model, prompt, stream = true))
         val request = HttpRequest.newBuilder()
             .uri(URI.create("${baseUrl.trimEnd('/')}/api/generate"))
             .header("Content-Type", "application/json")

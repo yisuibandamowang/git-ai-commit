@@ -8,7 +8,7 @@ import java.nio.file.Path
 object GitAiCommitCommand {
     fun execute(
         repoRoot: Path?,
-        generateMessage: (GitAiConfig, Path) -> CommitMessageGeneration,
+        generateMessage: (GitAiConfig, Path, (String) -> Unit) -> CommitMessageGeneration,
         loadMergedConfig: (Path) -> GitAiConfig,
         messageStyleOverride: String? = null,
         stdout: PrintStream,
@@ -23,7 +23,10 @@ object GitAiCommitCommand {
         if (!messageStyleOverride.isNullOrBlank()) {
             config.messageStyle = messageStyleOverride
         }
-        return when (val result = generateMessage(config, root)) {
+        return when (val result = generateMessage(config, root) { partial ->
+            stderr.println("生成中：$partial")
+            stderr.flush()
+        }) {
             CommitMessageGeneration.EmptyDiff -> {
                 stderr.println("没有检测到 git diff，先修改文件再试。")
                 1

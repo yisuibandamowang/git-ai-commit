@@ -12,7 +12,7 @@ import java.nio.file.Paths
 
 class GitAiCommitCli(
     private val configStore: GitAiConfigStore = GitAiConfigStore(),
-    private val generateMessage: (GitAiConfig, Path) -> CommitMessageGeneration = ::defaultGenerateMessage,
+    private val generateMessage: (GitAiConfig, Path, (String) -> Unit) -> CommitMessageGeneration = ::defaultGenerateMessage,
     private val repoFinder: (Path) -> Path? = ::defaultRepoFinder,
     private val cwd: Path = Paths.get("").toAbsolutePath(),
     private val stdout: PrintStream = System.out,
@@ -59,11 +59,15 @@ class GitAiCommitCli(
     }
 
     companion object {
-        private fun defaultGenerateMessage(config: GitAiConfig, repoRoot: Path): CommitMessageGeneration {
+        private fun defaultGenerateMessage(
+            config: GitAiConfig,
+            repoRoot: Path,
+            onUpdate: (String) -> Unit,
+        ): CommitMessageGeneration {
             val generator = CommitMessageGenerator(
                 settingsProvider = { config.toSettingsStateData() }
             )
-            return generator.generate(repoRoot.toString())
+            return generator.generate(repoRoot.toString(), onUpdate)
         }
 
         private fun defaultRepoFinder(start: Path): Path? {

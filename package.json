@@ -1,6 +1,6 @@
 {
   "name": "git-ai-commit",
-  "version": "0.1.0",
+  "version": "0.1.26",
   "private": true,
   "description": "Local-first commit message assistant for IDEA and CLI",
   "model": {
